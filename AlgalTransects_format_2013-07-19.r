@@ -2,8 +2,14 @@
 	# note: do not use comma-delimited, as there are commas in data entries
 	
 	# make Angelo subset at appropriate place
+
+# Establish plot settings
 	
+library(ggplot2)
+plot_theme1<-theme(panel.grid = element_blank(), panel.background = element_blank(), axis.text = element_text(colour="black"), axis.line = element_line(colour="black"))
+
 # Read data
+	# use browser to get file from local directory
 
 AlgalTransects = read.table('2013-03-21_AlgalTransects.txt', header=T, na.strings='', sep='\t', fill=TRUE, quote='')
 	# fill=TRUE solves problems with unequal row lengths
@@ -17,7 +23,8 @@ sapply(AlgalTransects, class)
 	# record id 7591:  has '48' for xloc and 
 	# record id 7557: has '20 cm dbh' for xloc
 
-{# Format data
+{
+	# Format data
 	# transform and create columns as needed
 
 AlgalTransects$Rdate = as.Date(AlgalTransects$date, format= '%m/%d/%Y')
@@ -46,28 +53,15 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 	levels(AlgalTransects2$algaesub)
 	levels(AlgalTransects2$algaesub2)
 	
-	# prevalence of different algae types
-	
-		# dominant algae
-		table(AlgalTransects2$algaedom)
-		
-		# all algae
-		table(as.factor(c(as.character(AlgalTransects2$algaedom),as.character(AlgalTransects2$algaesub),as.character(AlgalTransects2$algaesub2))))
-		
-		# Algal categories with Keith
-			# Cladophora
-			# sedge?
-				# 244 points, about half of which are out of the water
-			
-	hist(AlgalTransects2[which(AlgalTransects2$algaedom == 'sedge'),'depth'])
-	table(AlgalTransects2[which(AlgalTransects2$algaedom == 'sedge'),'Transect'])
-	
+	#prevalence of the different algae types
+	table(as.factor(c(as.character(AlgalTransects2$algaedom), as.character(AlgalTransects2$algaesub),as.character(AlgalTransects2$algaesub2))))
+
 	# Cladophora: is Clad present? (yes=1, no=0) 
 	AlgalTransects2$Clad = as.numeric(AlgalTransects2$algaedom == 'Cladophora glomerata attached' | AlgalTransects2$algaedom == 'Cladophora glomerata loose' | AlgalTransects2$algaesub == 'Cladophora glomerata attached' | AlgalTransects2$algaesub == 'Cladophora glomerata loose' | AlgalTransects2$algaesub2 == 'Cladophora glomerata attached' | AlgalTransects2$algaesub2 == 'Cladophora glomerata loose')
 	
 	AlgalTransects2$Clad[is.na(AlgalTransects2$Clad)] = 0
 		
-	# N-fixing cyanobacteria: is Nos or riv present or Anabaena present? (yes=1, no=0) (only 2 anabaena in whole data set)
+	# N-fixing cyanobacteria: is Nos or riv p2resent or Anabaena present? (yes=1, no=0) (only 2 anabaena in whole data set)
 	AlgalTransects2$NosRiv = as.numeric(AlgalTransects2$algaedom == 'Nostoc balls' | AlgalTransects2$algaedom == 'Nostoc ears' | AlgalTransects2$algaedom == 'Rivularia' | AlgalTransects2$algaesub == 'Nostoc balls' | AlgalTransects2$algaesub == 'Nostoc ears' | AlgalTransects2$algaesub == 'Rivularia' | AlgalTransects2$algaesub2 == 'Nostoc balls' | AlgalTransects2$algaesub2 == 'Nostoc ears' | AlgalTransects2$algaesub2 == 'Rivularia')
 		
 	AlgalTransects2$NosRiv[is.na(AlgalTransects2$NosRiv)] = 0
@@ -77,11 +71,12 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 		
 	AlgalTransects2$Zyg[is.na(AlgalTransects2$Zyg)] = 0
 }
+
 {
 # Create variables combining time and location
 
 	# create an identifier for each transect point in each year
-	AlgalTransects2$YearPoint = paste(AlgalTransects3$year,AlgalTransects3$TranXstr)
+#? why "3"	AlgalTransects2$YearPoint = paste(AlgalTransects3$year,AlgalTransects3$TranXstr)
 		
 	# create an identifier for each transect-date (ie each survey of a transect)
 	AlgalTransects2$survey = paste(AlgalTransects3$transect,AlgalTransects3$date)		
@@ -219,23 +214,109 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 		
 		# note that this does not capture variation between transects in peak bloom, as algal heights are averaged over all transects
 	
-# Transect 2.5 average height on each survey, and date and size of peak algal bloom
+	
+	
+# average height on each survey at each transect and date and size of peak algal bloom
 
 		# create data frame of maximum mean modal biomass per year at transect 2.5
+
+		Clad2DateMean = na.omit(with(AlgalTransects2[which(AlgalTransects2$Transect=='2' & AlgalTransects2$depth > 0),], aggregate(CladInt, by=list(year=year, date=date), FUN=mean)))
+		names(Clad2DateMean)[3] = 'CladHt_cm'
+		Clad2DateMean$Rdate = as.Date(Clad2DateMean$date, format= '%m/%d/%Y')
+		#write.table(Clad2DateMean, sep = '\t', file='AlgalTransect2_MeanCladHeight.txt', col.names = T, row.names=F, quote=F)
+
 
 		Clad2.5DateMean = na.omit(with(AlgalTransects2[which(AlgalTransects2$Transect=='2.5' & AlgalTransects2$depth > 0),], aggregate(CladInt, by=list(year=year, date=date), FUN=mean)))
 		names(Clad2.5DateMean)[3] = 'CladHt_cm'
 		Clad2.5DateMean$Rdate = as.Date(Clad2.5DateMean$date, format= '%m/%d/%Y')
-		write.table(Clad2.5DateMean, sep = '\t', file='AlgalTransect2.5_MeanCladHeight.txt', col.names = T, row.names=F, quote=F)
+		#write.table(Clad2.5DateMean, sep = '\t', file='AlgalTransect2.5_MeanCladHeight.txt', col.names = T, row.names=F, quote=F)
 		
-		# Create a data frame with maximum mean modal biomass in each year (and date at which it was attained)
-			# write to text file
+Clad3DateMean = na.omit(with(AlgalTransects2[which(AlgalTransects2$Transect=='3' & AlgalTransects2$depth > 0),], aggregate(CladInt, by=list(year=year, date=date), FUN=mean)))
+		names(Clad3DateMean)[3] = 'CladHt_cm'
+		Clad3DateMean$Rdate = as.Date(Clad3DateMean$date, format= '%m/%d/%Y')
+		#write.table(Clad3DateMean, sep = '\t', file='AlgalTransect3_MeanCladHeight.txt', col.names = T, row.names=F, quote=F)		
+Clad4DateMean = na.omit(with(AlgalTransects2[which(AlgalTransects2$Transect=='4' & AlgalTransects2$depth > 0),], aggregate(CladInt, by=list(year=year, date=date), FUN=mean)))
+		names(Clad4DateMean)[3] = 'CladHt_cm'
+		Clad4DateMean$Rdate = as.Date(Clad4DateMean$date, format= '%m/%d/%Y')
+		#write.table(Clad4DateMean, sep = '\t', file='AlgalTransect4_MeanCladHeight.txt', col.names = T, row.names=F, quote=F)			
+		
+
+
+# Create a data frame with maximum mean modal biomass in each year (and date at which it was attained)
+
+		idMax2 = sapply(split(1:nrow(Clad2DateMean), Clad2DateMean$year), function(x) 	x[which.max(Clad2DateMean$CladHt_cm[x])])
+		Clad2AnnMax = Clad2DateMean[idMax2,]
+		#write.table(Clad2AnnMax, sep = '\t', file='AlgalTransect2_AnnMaxCladHeight.txt', col.names = T, row.names=F, quote=F)
 
 		idMax2.5 = sapply(split(1:nrow(Clad2.5DateMean), Clad2.5DateMean$year), function(x) x[which.max(Clad2.5DateMean$CladHt_cm[x])])
 		Clad2.5AnnMax = Clad2.5DateMean[idMax2.5,]
-		write.table(Clad2.5AnnMax, sep = '\t', file='AlgalTransect2.5_AnnMaxCladHeight.txt', col.names = T, row.names=F, quote=F)
-
-		# the following code just gets you max per year (no date info)
-		# Clad2.5AnnMax2 = 	with(Clad2.5DateMean, aggregate(ht, by=list(year=year), FUN=max))
+		#write.table(Clad2.5AnnMax, sep = '\t', file='AlgalTransect2.5_AnnMaxCladHeight.txt', col.names = T, row.names=F, quote=F)
 		
+idMax3 = sapply(split(1:nrow(Clad3DateMean), Clad3DateMean$year), function(x) x[which.max(Clad3DateMean$CladHt_cm[x])])
+		Clad3AnnMax = Clad3DateMean[idMax3,]
+		#write.table(Clad3AnnMax, sep = '\t', file='AlgalTransect3_AnnMaxCladHeight.txt', col.names = T, row.names=F, quote=F)		
+
+idMax4 = sapply(split(1:nrow(Clad4DateMean), Clad4DateMean$year), function(x) x[which.max(Clad4DateMean$CladHt_cm[x])])
+		Clad4AnnMax = Clad4DateMean[idMax4,]
+		#write.table(Clad4AnnMax, sep = '\t', file='AlgalTransect4_AnnMaxCladHeight.txt', col.names = T, row.names=F, quote=F)
+		
+		
+## Make plot of the idMax data					
+	t1<-as.data.frame(c(idMax2,idMax2.5, idMax3, idMax4))
+	t1$year<-rep(c(1987:1992,1995:2012),4)
+	t1$transect<-rep(c(2,2.5,3,4),24)
+	t1$transect<-sort(t1$transect)
+	t1$transect<-as.factor(t1$transect)
+	names(t1)[1]<-'height'
+
+
+		idMAplot<- ggplot(data=t1, aes(x=year, y=height, color=transect))
+
+		idMaxAll_plot<- idMAplot + geom_line(aes(color=transect)) + facet_grid(transect 		~ ., scales 		= "free_y") + plot_theme1 + ggtitle("idMax Plot")
+		ggsave(idMaxAll_plot,file= "idMaxAll_plot.png")
+
+
+	
+		
+		
+# create data frame of maximum mean modal biomass per year at each transect
+
+		CladDateMean = na.omit(aggregate(CladInt ~ year+date+Transect, FUN=mean, data=AlgalTransects2[which(AlgalTransects2$depth > 0),]))
+		names(CladDateMean)[4] = 'CladHt_cm'
+		CladDateMean$Rdate = as.Date(CladDateMean$date, format= '%m/%d/%Y')
+		write.table(CladDateMean, sep = '\t', file='AlgalTransectsAll_MeanCladHeight.txt', col.names = T, row.names=F, quote=F)
+		
+class(CladDateMean); head(CladDateMean)	
+
+
+
+##Make plot of the CladDateMean data
+		aht<-ggplot(data=CladDateMean, aes(x=Rdate, y=CladHt_cm, color=Transect))
+		
+		CladDateMean_plot<-aht + geom_line(aes(color=Transect)) + facet_grid(Transect ~ ., scales = 		"free_y") + plot_theme1	+ ggtitle("CladDateMean Plot")
+		ggsave(CladDateMean_plot,file= "CladDateMean_plot.png")
+		
+
+##Make plot of algae heights from Full Survey Data (atFWwet_stMean data line 192)
+		amean<-ggplot(data=atFSwet_stMean, aes(x=year, y=CladInt, color=Transect))
+
+		atFWwet_stMean_plot<-amean + geom_line(aes(color=Transect)) + facet_grid(Transect ~ ., scales = 		"free_y") + plot_theme1	+ ggtitle("atFWet_stMean Plot")
+		ggsave(atFWwet_stMean_plot,file= "atFWwet_stMean_plot.png")
+
+
+
+
+# Create a data frame with maximum mean modal biomass in each year (and date at which it was attained)
+			# write to text file
+
+
+##this "idMax" code where I try to index by Transect and Year does not appear to have worked. The idMax list gives a different result for transect 2.5 than the idMax2.5 code in line 225
+		idMax = sapply(split(1:nrow(CladDateMean), list(CladDateMean$Transect, CladDateMean$year)), function(x) x[which.max(CladDateMean$CladHt_cm[x])])
+	
+# line 305 does not work and I don't understand why
+		#CladAnnMax = CladDateMean[idMax,]
+		#write.table(idMax, sep = '\t', file='AlgalTransectsT_AnnMaxCladHeight.txt', col.names = T, row.names=F, quote=F)				
+
+
+	
 
