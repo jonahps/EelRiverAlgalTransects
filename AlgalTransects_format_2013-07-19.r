@@ -11,7 +11,7 @@ plot_theme1<-theme(panel.grid = element_blank(), panel.background = element_blan
 # Read data
 	# use browser to get file from local directory
 
-AlgalTransects = read.table('2013-03-21_AlgalTransects.txt', header=T, na.strings='', sep='\t', fill=TRUE, quote='')
+AlgalTransects = read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='')
 	# fill=TRUE solves problems with unequal row lengths
 	# quote = '' solves the problems created by apostrophes in the data set
 	 
