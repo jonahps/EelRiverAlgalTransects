@@ -5,11 +5,11 @@
 # Call dataframe "AlgalTransects2" from "AlgalTransects_format_2013-07-19.r" script.
 
 
-# Select data from April to September
+# Select data from May to September
 
 	astates<-AlgalTransects2[which(as.numeric(AlgalTransects2$month) >= 5 & as.numeric(AlgalTransects2$month) <= 9),]
 	
-	#head(astates)
+	head(astates)
 	#dim(astates)
 
 
@@ -30,7 +30,7 @@
 		astates$algaedom[b]<-"bare"
 
 		
-	# Remove rows with algal classes we are not interested in, , and then drop the 		unused levels
+	# Remove rows with algal classes we are not interested in, and then drop the unused levels
 	
 		astates<-astates[which(astates$algaedom != "black crust" & astates$algaedom != "green skin" & astates$algaedom != "general blue-green algae" & astates$algaedom != "Cyanobac filaments" & astates$algaedom != "litter"),]
 
@@ -52,7 +52,7 @@
 	table(astates$algaedom,exclude=NULL)	
 
 
-# Create palate for plots
+# Create palate for plots (www.iwanthue.com)
 	kbgPal1<-c("#ED2A5B", "#6E645A", "#3474AE", "#D6E29A", "#400B1E", "#F3C6D1", "#CD5A01", "#951475", "#4E8921", "#DF9DF1")
 
 
@@ -60,42 +60,42 @@
 	
 	p2 <- ggplot(data=astates[which(astates$Transect==2 & astates$xstrm <= 15),], aes(x=xstrm, factor=algaedom))
 	
-	p2 + geom_histogram(stat="bin", binwidth = 0.5) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 2")
+	p2 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 2")
 
-	p2 + geom_bar(stat="bin", binwidth = 0.5, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2")
+	p2 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2")
 
 
 # Plot the frequency of each algal class at each point in transect 2.5, stream channel usually narrower than 20m
 	
 	p2.5 <- ggplot(data=astates[which(astates$Transect==2.5) & astates$xstrm <= 15,], aes(x=xstrm, factor=algaedom))
 	
-	p2.5 + geom_histogram(stat="bin", binwidth = 0.5) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 2.5")
+	p2.5 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 2.5")
 
-	p2.5 + geom_bar(stat="bin", binwidth = 0.5, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2.5")
+	p2.5 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2.5")
 
-	p2.5 + geom_bar(stat="bin", binwidth = 0.5, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1)) + ggtitle("Transect 2.5")
+	p2.5 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1)) + ggtitle("Transect 2.5")
 
 
 # Plot the frequency of each algal class at each point in transect 3, stream channel usually narrower than 29m
 	
 	p3 <- ggplot(data=astates[which(astates$Transect==3 & astates$xstrm <= 29),], aes(x=xstrm, factor=algaedom))
 	
-	p3 + geom_histogram(stat="bin", binwidth = 0.5) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 3") 
+	p3 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 3") 
 
-	p3 + geom_bar(stat="bin", binwidth = 0.5, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 3")
+	p3 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 3")
 
-	p3 + geom_bar(stat="bin", binwidth = 0.5, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 3")
+	p3 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 3")
 	
 	
 # Plot the frequency of each algal class at each point in transect 4, stream channel usually narrower than 30m
 	
 	p4 <- ggplot(data=astates[which(astates$Transect==4 & astates$xstrm <= 30),], aes(x=xstrm, factor=algaedom))
 	
-	p4 + geom_histogram(stat="bin", binwidth = 0.5) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 4") 
+	p4 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 4") 
 
-	p4 + geom_bar(stat="bin", binwidth = 0.5, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 4")
+	p4 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 4")
 
-	p4 + geom_bar(stat="bin", binwidth = 0.5, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 4")	
+	p4 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 4")	
 	
 
 
@@ -108,7 +108,7 @@
 
 		pstdv <- ggplot(data= stdv, aes(x=xstrm, y=algaedom, group=Transect))
 
-		pstdv + geom_bar(stat="identity", binwidth=-.5) +  plot_theme1 + facet_grid(.~ Transect)	+  ggtitle("Stdev of Algaedom")
+		pstdv + geom_bar(stat="identity", binwidth=1) +  plot_theme1 + facet_grid(.~ Transect)	+  ggtitle("Stdev of Algaedom")
 
 	# Make a heatmap of the standard deviations
 
