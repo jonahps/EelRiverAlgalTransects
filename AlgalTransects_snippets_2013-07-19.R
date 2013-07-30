@@ -1,5 +1,4 @@
-# Mary Power algal transect data
-	# note: do not use comma-delimited, as there are commas in data entries
+# this script stores pieces of code that may prove useful
 	
 	# make Angelo subset at appropriate place
 library(ggplot2)
