@@ -37,7 +37,7 @@
 	
 	# Combine some levels together
 	
-		# install.packages("car") to use "recode" command
+		# install.packages ("car") to use "recode" command
 		library(car)
 	
 		astates$algaedom<-recode(astates$algaedom, " 'diatom skin' = 'Diatom skin' ")
