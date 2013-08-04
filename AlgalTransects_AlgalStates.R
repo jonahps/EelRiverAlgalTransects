@@ -13,26 +13,26 @@
 	#dim(astates)
 
 
-# Round xstrm to nearest 0.5 meter
+# Round xstrm to nearest 1 meter
 
-	astates$xstrm<-(round((astates$xstrm*2),0))/2
+	astates$xstrmRnd<-(round((astates$xstrm),0))
 
-	#sort(unique(astates$xstrm))
+	#sort(unique(astates$xstrmRnd))
 
 
 # Reformat algaedom column 
 
 	# Change NA to "bare"
 		
-		astates$algaedom<-factor(astates$algaedom, levels = c(levels(astates$algaedom),"bare"))
+		astates$algaeStates<-factor(astates$algaedom, levels = c(levels(astates$algaedom),"bare"))
 		
-		b<-which(is.na(astates$algaedom)==TRUE)
-		astates$algaedom[b]<-"bare"
+		b<-which(is.na(astates$algaeStates)==TRUE)
+		astates$algaeStates[b]<-"bare"
 
 		
 	# Remove rows with algal classes we are not interested in, and then drop the unused levels
 	
-		astates<-astates[which(astates$algaedom != "black crust" & astates$algaedom != "green skin" & astates$algaedom != "general blue-green algae" & astates$algaedom != "Cyanobac filaments" & astates$algaedom != "litter"),]
+		astates<-astates[which(astates$algaeStates != "black crust" & astates$algaeStates != "green skin" & astates$algaeStates != "general blue-green algae" & astates$algaeStates != "Cyanobac filaments" & astates$algaeStates != "litter"),]
 
 	
 	# Combine some levels together
@@ -40,16 +40,16 @@
 		# install.packages ("car") to use "recode" command
 		library(car)
 	
-		astates$algaedom<-recode(astates$algaedom, " 'diatom skin' = 'Diatom skin' ")
-		astates$algaedom<-recode(astates$algaedom, " 'Cladophora glomerata loose' = 'Cladophora glomerata attached' ")
+		astates$algaeStates <-recode(astates$algaeStates, " 'diatom skin' = 'Diatom skin' ")
+		astates$algaeStates <-recode(astates$algaeStates, " 'Cladophora glomerata loose' = 'Cladophora glomerata attached' ")
 
 
 	# Drop unused levels
 
-		astates$algaedom<-droplevels(astates$algaedom)
+		astates$algaeStates <-droplevels(astates$algaeStates)
 
 	
-	table(astates$algaedom,exclude=NULL)	
+	table(astates$algaeStates,exclude=NULL)	
 
 
 # Create palate for plots (www.iwanthue.com)
@@ -58,70 +58,93 @@
 
 # Plot the frequency of each algal class at each point in transect 2, stream channel usually narrower than 15m
 	
-	p2 <- ggplot(data=astates[which(astates$Transect==2 & astates$xstrm <= 15),], aes(x=xstrm, factor=algaedom))
+	p2 <- ggplot(data=astates[which(astates$Transect==2 & astates$xstrmRnd <= 15),], aes(x= xstrmRnd, factor= algaeStates))
 	
-	p2 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 2")
+	p2 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaeStates, scales = "free_y") + plot_theme1 + ggtitle("Transect 2")
 
-	p2 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2")
+	p2 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2")
 
 
 # Plot the frequency of each algal class at each point in transect 2.5, stream channel usually narrower than 20m
 	
-	p2.5 <- ggplot(data=astates[which(astates$Transect==2.5) & astates$xstrm <= 15,], aes(x=xstrm, factor=algaedom))
+	p2.5 <- ggplot(data=astates[which(astates$Transect==2.5 & astates$xstrmRnd <= 15),], aes(x= xstrmRnd, factor= algaeStates))
 	
-	p2.5 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 2.5")
+	p2.5 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaeStates, scales = "free_y") + plot_theme1 + ggtitle("Transect 2.5")
 
-	p2.5 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2.5")
+	p2.5 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2.5")
 
-	p2.5 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1)) + ggtitle("Transect 2.5")
+	p2.5 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1)) + ggtitle("Transect 2.5")
 
 
 # Plot the frequency of each algal class at each point in transect 3, stream channel usually narrower than 29m
 	
-	p3 <- ggplot(data=astates[which(astates$Transect==3 & astates$xstrm <= 29),], aes(x=xstrm, factor=algaedom))
+	p3 <- ggplot(data=astates[which(astates$Transect==3 & astates$xstrmRnd <= 29),], aes(x= xstrmRnd, factor= algaeStates))
 	
-	p3 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 3") 
+	p3 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaeStates, scales = "free_y") + plot_theme1 + ggtitle("Transect 3") 
 
-	p3 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 3")
+	p3 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 3")
 
-	p3 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 3")
+	p3 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 3")
 	
 	
 # Plot the frequency of each algal class at each point in transect 4, stream channel usually narrower than 30m
 	
-	p4 <- ggplot(data=astates[which(astates$Transect==4 & astates$xstrm <= 30),], aes(x=xstrm, factor=algaedom))
+	p4 <- ggplot(data=astates[which(astates$Transect==4 & astates$xstrmRnd <= 30),], aes(x= xstrmRnd, factor= algaeStates))
 	
-	p4 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaedom, scales = "free_y") + plot_theme1 + ggtitle("Transect 4") 
+	p4 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaeStates, scales = "free_y") + plot_theme1 + ggtitle("Transect 4") 
 
-	p4 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 4")
+	p4 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 4")
 
-	p4 + geom_bar(stat="bin", binwidth = 1, aes(fill=algaedom)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 4")	
+	p4 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 4")	
 	
 
+## Calculate the diversity index for astates$AlgaeStates at each xstrmRnd point
+
+	# Create a dataefram with a column for transect, xstrmRnd, algalState, and frequency of algal state
+		
+		stateFreq<-aggregate(astates$algaeStates,list(astates$xstrmRnd, astates$algaeStates, astates$Transect),length)
+
+		colnames(stateFreq)<-c("xstrmRnd","algaeState", "Transect","Freq")
 
 
-# Calculate the standard deviaion in algaedom class at each xstrm point for each transect
+	#melt stateFreq into wide format with each column a specific algal class, each row the xstrmRnd and the freq as the data
 
-	stdv<-aggregate(data=astates, algaedom ~ Transect + xstrm, sd)
+		library(reshape2)
+	
+		stateFreqw<-reshape(stateFreq, v.names = "Freq", timevar="algaeState" , idvar=c("xstrmRnd","Transect"), direction="wide")
 
-	# Plot the standard deviation of algaedom data
-
-		pstdv <- ggplot(data= stdv, aes(x=xstrm, y=algaedom, group=Transect))
-
-		pstdv + geom_bar(stat="identity", binwidth=1) +  plot_theme1 + facet_grid(.~ Transect)	+  ggtitle("Stdev of Algaedom")
-
-	# Make a heatmap of the standard deviations
-
-		phm<-ggplot(data=stdv, aes(x=xstrm, y=Transect,)) 
-
-		phm + geom_tile(aes(fill=algaedom),color="white") + scale_fill_gradient(low = "white", high= "steel blue") + plot_theme1
+		stateFreqw[is.na(stateFreqw)] = 0
 
 
+# Calculate the Shannon Diversity Index
+
+		library(vegan)
+
+		stateFreqw2<-stateFreqw2[which(stateFreqw2$Transect==2),]
+		
+		divSh<-diversity(stateFreqw,"shannon")
+	
+		dt2<-as.data.frame(cbind(c(0,seq(0:14)),divT2Sh))
+	colnames(dt2)<-c("xstrmRnd","ShannonDiv")
+	
+# Plot the Shannon Diversity Index against xstrmRnd
+
+	pdiv2t<-ggplot(data=dt2, aes(x=xstrmRnd, y=ShannonDiv))
+	
+	pdiv2t + geom_bar(stat="identity")	
 
 
+# Calculate the Brillouin Index
+	Br<-NULL
+	for(i in 1:nrow(stateFreqw){
+		N<-sum(stateFreqw[i,3:12])
+		Br[i]<-(lfactorial(N) - sum(lfactorial(stateFreqw[i,3:12])))/N	
+	}
 
+?while
+	
 
-
+Hb <- function(ns) {    N <- sum(ns)    (lfactorial(N) - sum(lfactorial(ns)))/N }
 
 
 #### BELOW IS MY TEST SCRIPT FOR TRANSECT 2#############################
