@@ -7,11 +7,13 @@
 
 # Select data from May to September
 
-	astates<-AlgalTransects2[which(as.numeric(AlgalTransects2$month) >= 5 & as.numeric(AlgalTransects2$month) <= 9),]
+	astates<-AlgalTransects2[which(as.numeric(AlgalTransects2$month) >= 5 & as.numeric(AlgalTransects2$month) <= 9 & AlgalTransects2$depth >= 0 ),]
+	
 	
 	head(astates)
 	#dim(astates)
 
+table(astates$depth,exclude=NULL)
 
 # Round xstrm to nearest 1 meter
 
@@ -98,7 +100,7 @@
 	p4 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 4")	
 	
 
-## Calculate the diversity index for astates$AlgaeStates at each xstrmRnd point
+## Calculate a diversity index for astates$AlgaeStates at each xstrmRnd point
 
 	# Create a dataefram with a column for transect, xstrmRnd, algalState, and frequency of algal state
 		
@@ -116,71 +118,44 @@
 		stateFreqw[is.na(stateFreqw)] = 0
 
 
-# Calculate the Shannon Diversity Index
-
-		library(vegan)
-
-		stateFreqw2<-stateFreqw2[which(stateFreqw2$Transect==2),]
-		
-		divSh<-diversity(stateFreqw,"shannon")
-	
-		dt2<-as.data.frame(cbind(c(0,seq(0:14)),divT2Sh))
-	colnames(dt2)<-c("xstrmRnd","ShannonDiv")
-	
-# Plot the Shannon Diversity Index against xstrmRnd
-
-	pdiv2t<-ggplot(data=dt2, aes(x=xstrmRnd, y=ShannonDiv))
-	
-	pdiv2t + geom_bar(stat="identity")	
 
 
 # Calculate the Brillouin Index
+	# used when species are not sampled randomly (http://www.pisces-conservation.com/sdrhelp/index.html?brillouind.htm)
+	
 	Br<-NULL
-	for(i in 1:nrow(stateFreqw){
-		N<-sum(stateFreqw[i,3:12])
-		Br[i]<-(lfactorial(N) - sum(lfactorial(stateFreqw[i,3:12])))/N	
-	}
-
-?while
+	for(i in 1:nrow(stateFreqw)){N<-sum(stateFreqw[i,3:12])
+		Br[i]<-(lfactorial(N) - sum(lfactorial(stateFreqw[i,3:12])))/N
+		}
 	
+	Brdata<-cbind(stateFreqw[,1:2],Br)
 
-Hb <- function(ns) {    N <- sum(ns)    (lfactorial(N) - sum(lfactorial(ns)))/N }
+# Plot the Brillouin Index for each transect
 
-
-#### BELOW IS MY TEST SCRIPT FOR TRANSECT 2#############################
-
-
-
-# Determine the proportion of algae at each point
+	pBr <- ggplot(data= Brdata, aes(x=xstrmRnd, y=Br, factor=Transect))
 	
-	# Create a contingency table for the count of dominant algal classes at 	each xstrm
+	pBr + geom_bar(stat="identity") + facet_grid(.~Transect)
+
+
+###### Substrate experimentation
+
+# how does the substrate class vary at each point
+
+		substrFreq<-aggregate(astates$substr,list(astates$xstrm, astates$xstrmRnd, astates$substr, astates$Transect),length)
+			colnames(substrFreq)<-c("xstrm","xstrmRnd","Substrate", "Transect","Freq")
 		
-		freq <- table(t2dr$algaedom, t2dr$xstrm)
-		freq<-as.data.frame(freq)
-		colnames(freq)[c(1:3)]<-c("algaedom","xstrm","count")
+		substrFreq$level<-as.numeric(substrFreq$Substrate)	
+			
+			
+			pSub <- ggplot(data= substrFreq[which(substrFreq$Transect == 2),], aes(x=xstrmRnd, y=Freq, factor=Transect))
 	
-	# Sum up the total number of algal counts at each xstrm
-		
-		prop<-aggregate(freq$count ~ freq$xstrm, FUN = sum)
-		colnames(prop)<-c("pxstrm","sumcount")
-	
-		
-	# Divide the count of each algal class at each xstrm by the sum of all 		algal classes counted		
-		
-		freq$sum<-rep(prop$sumcount,each=8)
-		freq$p<- freq$count/freq$sum
-		tail(freq,20)
+	pSub + geom_bar(stat="identity", aes(fill = Substrate)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))
 
-# Plot the proportion of each algal class at each xstrm point in transect 2
-	
-	p2 <- ggplot(data=freq, aes(x=xstrm, y=p, factor=algaedom))
-	
-	# Histogram
-		p2 + geom_histogram(stat="identity", binwidth = 0.5, 						aes(fill=algaedom)) + 	facet_wrap(~ algaedom, nrow=2, ncol=4, 	scales 		= "free_y") + plot_theme1			
-		
-	# Stacked bar graph showing same data
-		p2 + geom_bar(stat="identity",aes(fill=algaedom)) + plot_theme1	
-	
-	# Multiple y-axes, plot freq$count and freq$p for each xstrm and faceted by algaedom
+
+			pSub <- ggplot(data= substrFreq[which(substrFreq$Transect == 4),], aes(x=xstrm, y=level, factor=Transect))
+
+	pSub + geom_point(aes(color = Substrate)) + scale_color_manual(values = c(kbgPal1)) + plot_theme1
+
+table(substrFreq$substr, exclude=NULL)
 
 
