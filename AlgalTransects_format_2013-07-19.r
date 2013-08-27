@@ -33,6 +33,33 @@ AlgalTransects2 = transform(AlgalTransects, Transect = as.factor(Transect),	mont
 		
 AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$Rdate,'%m'))<=9, as.character(as.numeric(AlgalTransects2$year)-1), as.character(AlgalTransects2$year)))
 
+# Add Hydrologic data
+
+  # flooding
+    # bankfull flood as defined in Power et al 2008
+    # currently only available 1988-2012
+
+  # Flood years for the season preceding summer: 1988-2012
+  flood = read.table(file.choose(), header=T, sep='\t', quote='')
+  # note that year refers to the algae year, or 'SummerYear', not the water year
+
+  # change name of year column to match algal transect data base
+  
+  names(flood)[1] = 'year'
+
+  # add column for previous year's flooding 
+    # not the winter directly preceding the current growing season, but the one before it
+
+  flood$PrevYearFlood = c('NA', as.character(flood$Flood[1:length(flood$Flood)-1]))
+
+  # add column for 2-year flood combinations
+
+  flood$TwoYears = c('NA', as.character(paste(flood$PrevYearFlood[-1],':',flood$Flood[-1])))
+
+  # integrate flooding data into Algal data base
+
+  AlgalTransects2 = merge(AlgalTransects2,flood, by='year')
+
 # Create algal variables
 	# Make an integrated Cladophora variable
 		# shows Cladophora height, with 0 for no Cladophora
