@@ -1,12 +1,10 @@
-# Mary Power algal transect data
-	# note: do not use comma-delimited, as there are commas in data entries
+# Mary Power's Algal Transect Data: Formatting	
 	
-	# make Angelo subset at appropriate place
+  # This script reads in the comprehensive algal transect database, fixes problematic entries, adds additional variables, and creates useful summaries and subsets
 
-# Establish plot settings
-	
-library(ggplot2)
-plot_theme1<-theme(panel.grid = element_blank(), panel.background = element_blank(), axis.text = element_text(colour="black"), axis.line = element_line(colour="black"))
+  # the data set is in tab-delimited text format (.txt)
+    # note: do not store data in a comma-delimited format, as there are commas in data entries
+
 
 # Read data
 	# use browser to get file from local directory
@@ -18,20 +16,49 @@ AlgalTransects = read.table(file.choose(), header=T, na.strings='', sep='\t', fi
 # look at class of columns
 sapply(AlgalTransects, class)		
 
-# Oddities
-	# record id 7351: xloc is "\"marker RHS \"\"N\"\"\"" should be 'marker RHS "N"'
-	# record id 7591:  has '48' for xloc and 
+# Problematic entries
+	# record id 7351: xloc should be 'marker RHS "N"'
+    # this problem is addressed in current code
+	# record id 7591: had '48' for xloc, modified in FilePro database
 	# record id 7557: has '20 cm dbh' for xloc
 
 {
-	# Format data
+# Format data
 	# transform and create columns as needed
 
+# format dates  
 AlgalTransects$Rdate = as.Date(AlgalTransects$date, format= '%m/%d/%Y')
 	
 AlgalTransects2 = transform(AlgalTransects, Transect = as.factor(Transect),	month = format(Rdate, '%m'),yearday = as.numeric(format(Rdate, '%j')), year = as.numeric(format(Rdate, '%Y')))
 		
 AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$Rdate,'%m'))<=9, as.character(as.numeric(AlgalTransects2$year)-1), as.character(AlgalTransects2$year)))
+
+# Add Hydrologic data
+
+  # flooding
+    # bankfull flood as defined in Power et al 2008
+    # currently only available 1988-2012
+
+  # Flood years for the season preceding summer: 1988-2012
+  flood = read.table(file.choose(), header=T, sep='\t', quote='')
+  # note that year refers to the algae year, or 'SummerYear', not the water year
+
+  # change name of year column to match algal transect data base
+  
+  names(flood)[1] = 'year'
+
+  # add column for previous year's flooding 
+    # not the winter directly preceding the current growing season, but the one before it
+
+  flood$PrevYearFlood = c('NA', as.character(flood$Flood[1:length(flood$Flood)-1]))
+
+  # add column for 2-year flood combinations
+
+  flood$TwoYears = c('NA', as.character(paste(flood$PrevYearFlood[-1],':',flood$Flood[-1])))
+
+  # integrate flooding data into Algal data base
+
+  AlgalTransects2 = merge(AlgalTransects2,flood, by='year')
 
 # Create algal variables
 	# Make an integrated Cladophora variable
@@ -61,7 +88,7 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 	
 	AlgalTransects2$Clad[is.na(AlgalTransects2$Clad)] = 0
 		
-	# N-fixing cyanobacteria: is Nos or riv p2resent or Anabaena present? (yes=1, no=0) (only 2 anabaena in whole data set)
+	# N-fixing cyanobacteria: is Nos or riv present or Anabaena present? (yes=1, no=0) (only 2 anabaena in whole data set)
 	AlgalTransects2$NosRiv = as.numeric(AlgalTransects2$algaedom == 'Nostoc balls' | AlgalTransects2$algaedom == 'Nostoc ears' | AlgalTransects2$algaedom == 'Rivularia' | AlgalTransects2$algaesub == 'Nostoc balls' | AlgalTransects2$algaesub == 'Nostoc ears' | AlgalTransects2$algaesub == 'Rivularia' | AlgalTransects2$algaesub2 == 'Nostoc balls' | AlgalTransects2$algaesub2 == 'Nostoc ears' | AlgalTransects2$algaesub2 == 'Rivularia')
 		
 	AlgalTransects2$NosRiv[is.na(AlgalTransects2$NosRiv)] = 0
@@ -74,12 +101,9 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 
 {
 # Create variables combining time and location
-
-	# create an identifier for each transect point in each year
-#? why "3"	AlgalTransects2$YearPoint = paste(AlgalTransects3$year,AlgalTransects3$TranXstr)
 		
 	# create an identifier for each transect-date (ie each survey of a transect)
-	AlgalTransects2$survey = paste(AlgalTransects3$transect,AlgalTransects3$date)		
+	AlgalTransects2$survey = paste(AlgalTransects2$transect,AlgalTransects2$date)		
 }	
 # Subset data
 	
@@ -173,7 +197,11 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 	seq(from=as.Date('2011-08-20'), to=as.Date('2011-08-21'),by=1),
 	as.Date('2012-06-19'),
 	seq(from=as.Date('2012-06-25'), to=as.Date('2012-07-03'),by=1),
-	seq(from=as.Date('2012-07-24'), to=as.Date('2012-07-27'),by=1))
+	seq(from=as.Date('2012-07-24'), to=as.Date('2012-07-27'),by=1)),
+	as.Date('2013-05-16'),
+	seq(from=as.Date('2013-06-05'), to=as.Date('2013-06-06'),by=1)),
+  seq(from=as.Date('2013-07-01'), to=as.Date('2013-07-04'),by=1)),
+  as.Date('2013-07-21')
 }	
 	# subset data for full surveys
 	AlgalTransectsFS = data.frame()	
