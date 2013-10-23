@@ -17,16 +17,16 @@
   LastGrowSurvey = aggregate(yearday ~ Transect + year, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=max)
   
   # get transect points present at last survey in each year
-  WetPoints = AlgalTransects2[which(paste(AlgalTransects2$Transect,AlgalTransects2$year,AlgalTransects2$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('Transect','year','xstrm','yearday','depth')]
-    
+  WetPoints = AlgalTransects2[which(paste(AlgalTransects2$Transect,AlgalTransects2$year,AlgalTransects2$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('Transect','year','xstrm','yearday','depth','flow','substr')]
+
   # remove non-integer points
   WetPoints = WetPoints[which(WetPoints$xstrm%%1 == 0),]
-  
+
   # look at width of channel
   
   aggregate(xstrm ~ Transect,data=WetPoints,FUN=min)
   aggregate(xstrm ~ Transect,data=WetPoints,FUN=max)
-  
+
 # Refine Clad Max data to include only wet points
   
   CladMaxPointWet = CladMaxPoint[which(paste(CladMaxPoint$Transect,CladMaxPoint$year,CladMaxPoint$xstrm)%in%paste(WetPoints$Transect,WetPoints$year,WetPoints$xstrm)),]
@@ -45,6 +45,27 @@ CladMaxPointWet$CladGrowth= CladMaxPointWet$CladInt>=10
   
 head(CladMaxPointWet)  
 
+# add growing season averages of flow, depth, and light
+
+  FlowAvg = aggregate(flow ~ year + Transect + xstrm, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=mean)
+
+  DepthAvg = aggregate(depth ~ year + Transect + xstrm, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=mean)
+
+  CladMaxPointWet = merge(CladMaxPointWet, FlowAvg, all.x=T)
+  CladMaxPointWet = merge(CladMaxPointWet, DepthAvg, all.x=T)
+
+  wattavgf = read.csv(file.choose())
+
+  CladMaxPointWet<-merge(CladMaxPointWet,wattavgf, all.x=T)
+
+# add substrate data (this still needs work)
+
+  with(WetPoints, table(xstrm,substr,Transect))
+
+  SubAvg = aggregate(substr ~ year + Transect + xstrm, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=mode)
+
 # write file to .csv
 
-write.csv(CladMaxPointWet, file='CladMaxPointWet.csv')
+write.csv(CladMaxPointWet, file='CladMaxPointWet.csv', row.names=F)
+
+
