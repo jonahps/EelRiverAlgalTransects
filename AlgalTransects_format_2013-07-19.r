@@ -20,6 +20,10 @@ sapply(AlgalTransects, class)
 # Problematic entries
 	# record id 7351: xloc should be 'marker RHS "N"'
 	# record id 7557: has '20 cm dbh' for xloc
+  # record id 16488: depth is 3236
+
+  # fix record 16488 -- assign depth to be NA
+  AlgalTransects[which(AlgalTransects$id==16488),'depth'] = NA
 
 # Format dates #########
 
