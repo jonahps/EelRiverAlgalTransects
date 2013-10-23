@@ -8,6 +8,7 @@
 
 # Read data
 	# use browser to get file from local directory
+	# 2013-08-27_AlgalTransects.txt
 
 AlgalTransects = read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='')
 	# fill=TRUE solves problems with unequal row lengths
@@ -41,6 +42,7 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 
   # Flood years for the season preceding summer: 1988-2012
   flood = read.table(file.choose(), header=T, sep='\t', quote='')
+  # 
   # note that year refers to the algae year, or 'SummerYear', not the water year
 
   # change name of year column to match algal transect data base

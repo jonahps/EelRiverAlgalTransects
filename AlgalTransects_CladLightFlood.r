@@ -1,5 +1,9 @@
 # Examine relationship between light, flooding, and Clad growth on an annual basis
 
+# Code created by Jonah P-S October 2013
+
+# first run "Algaltransects_format_2013-07-19.R" script
+
 # look at max Clad height for each survey point in each year
 
   # get max clad height in each year for each point
@@ -52,8 +56,23 @@ head(CladMaxPointWet)
   
   with(CladMaxPointWet, prop.table(table(Flood,CladGrowth, Transect), margin=c(1,3)))
   
+ #Merge the CladMaxPointWet and wattavgf (from "AlgalTransects_SummerAvg.R script") datasets together
+ 
+ 	CladMaxPointWet<-merge(CladMaxPointWet,wattavgf)
+  	head(CladMaxPointWet,30)
+  	tail(CladMaxPointWet)
+  	dim(CladMaxPointWet)
+  	
+  	
+ # Initial plots to visualize the data 	
+ 	library(ggplot2)
+ 
+ 
+	p<-ggplot(data=CladMaxPointWet, aes(x=watt_avg,y=CladInt,group=Transect))
   
+  	p + geom_point() + facet_grid(Flood~Transect, scales='free_y')
   
-  for (i in 1:length(x)){
-    y[i] = mean(i-1,i+1)
-  }
+	p2<-ggplot(data=CladMaxPointWet, aes(x=xstrm,y=CladInt,group=Transect))
+ 
+ 	p2 + geom_point() + geom_line(aes(x=xstrm,y=watt_avg/5), color="blue") + facet_grid(Flood~Transect, scales='free_y')
+
