@@ -6,11 +6,17 @@
 # Input max clad data (file = CladMaxPointWet.csv)
 
 		cml<-read.csv(file.choose())
+		head(cml)
+		str(cml)
 
-		
+# Remove depth outliers
+
+		#cml[which(cml$depth > 500),]
+		#cml<-cml[-723,]
+				
 
   	
-# Plots of the Clad Max and Light data
+# Plots of the data
 
 	library(ggplot2)
 	library(RColorBrewer)
@@ -23,13 +29,7 @@
 		plot_themeCML <-theme(panel.grid = element_blank(),  panel.background = element_rect(color="gray5"), panel.border = element_blank(), axis.text = element_text(colour="black"), axis.line = element_line(colour="black"), legend.background = element_rect(size=0.25, color="black"), legend.key = element_blank(),strip.background=element_blank(),strip.text.y=element_text(angle=0))
 	
 	
-	# Color palatte for the different sites
-		#clr<-c("#9FBF7D", "#FAA0E1", "#FA906D", "#76B4D5", "#45FEEB", "#B7C354", "#3FDBDE") 
-	
-	
 	# Create labels for the facets
-		#transect_labels<-list("2"="Transect 2","2.5"="Transect 2.5","3"="Transect 3","4"="Transect 4","flood"="flood","no flood"="no flood")
-		#transectlabeller<-function(variable,value){return(transect_labels[value])}
 	
 	t_labeller <-function(var,value){
 		value<-as.character(value)
@@ -55,10 +55,21 @@
   
 
 # Plot of Clad Height and Irradiance across Channel Cross Section	
-	p<-ggplot(data=cml, aes(x=xstrm,y=CladInt,group=Transect))
-
-
-	p2<-ggplot(data=CladMaxPointWet, aes(x=xstrm,y=CladInt,group=Transect))
+	px<-ggplot(data=cml, aes(x=xstrm,y=CladInt,group=Transect))
  
- 	p2 + geom_point() + geom_line(aes(x=xstrm,y=watt_avg/5), color="blue") + facet_grid(Flood~Transect, scales='free_y')
+ 	px + geom_point() + geom_line(aes(x=xstrm,y=watt_avg/10), color="red") + 
+ geom_point(aes(x=xstrm,y=depth*2, alpha=0.5), color="blue") +	
+ 	facet_grid(Transect~Flood, scales='free_y') + plot_themeCML
+ 	
+# Depth and flow
 
+	pdf<-ggplot(data=cml, aes(x=depth,y=flow,group=Transect))
+	
+	pdf + geom_point() + facet_grid(Transect~Flood, scales='free_y') + plot_themeCML
+
+
+# Density plot of depth
+
+		pd<-ggplot(data=cml,aes(x=depth,group=Transect))
+		
+		pd + geom_density() + facet_grid(Transect~Flood, scales='free_y') + plot_themeCML
