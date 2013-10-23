@@ -6,7 +6,7 @@
     # note: do not store data in a comma-delimited format, as there are commas in data entries
 
 
-# Read data
+# Read data #########
 	# use browser to get file from local directory
 	# 2013-08-27_AlgalTransects.txt
 
@@ -19,22 +19,22 @@ sapply(AlgalTransects, class)
 
 # Problematic entries
 	# record id 7351: xloc should be 'marker RHS "N"'
-    # this problem is addressed in current code
-	# record id 7591: had '48' for xloc, modified in FilePro database
 	# record id 7557: has '20 cm dbh' for xloc
 
-{
-# Format data
-	# transform and create columns as needed
+# Format dates #########
 
-# format dates  
 AlgalTransects$Rdate = as.Date(AlgalTransects$date, format= '%m/%d/%Y')
 	
 AlgalTransects2 = transform(AlgalTransects, Transect = as.factor(Transect),	month = format(Rdate, '%m'),yearday = as.numeric(format(Rdate, '%j')), year = as.numeric(format(Rdate, '%Y')))
 		
 AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$Rdate,'%m'))<=9, as.character(as.numeric(AlgalTransects2$year)-1), as.character(AlgalTransects2$year)))
 
-# Add Hydrologic data
+# Create variables combining time and location #######
+  	
+	# create an identifier for each transect-date (ie each survey of a transect)
+	AlgalTransects2$survey = paste(AlgalTransects2$transect,AlgalTransects2$date)		
+
+# Add Hydrologic data #######
 
   # flooding
     # bankfull flood as defined in Power et al 2008
@@ -62,7 +62,7 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 
   AlgalTransects2 = merge(AlgalTransects2,flood, by='year')
 
-# Create algal variables
+# Create algal variables ##########
 	# Make an integrated Cladophora variable
 		# shows Cladophora height, with 0 for no Cladophora
 
@@ -76,28 +76,28 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 # Create single variable for dominant macroalgae
   # Reformat algaedom column
 
-# Change NA to "bare"
-
-AlgalTransects2$algaeStates<-factor(AlgalTransects2$algaedom, levels = c(levels(AlgalTransects2$algaedom),"bare"))
+  # Change NA to "bare"
   
-b<-which(is.na(AlgalTransects2$algaeStates)==TRUE)
-AlgalTransects2$algaeStates[b]<-"bare"
-
-# recode algaeStates into specificied categories
-
-# install.packages ("car") to use "recode" command
-library(car)
+  AlgalTransects2$algaeStates<-factor(AlgalTransects2$algaedom, levels = c(levels(AlgalTransects2$algaedom),"bare"))
+    
+  b<-which(is.na(AlgalTransects2$algaeStates)==TRUE)
+  AlgalTransects2$algaeStates[b]<-"bare"
   
-levels(AlgalTransects2$algaeStates)
-
-# recode to desired categories
+  # recode algaeStates into specificied categories
   
-AlgalTransects2$algaeStates <-recode(AlgalTransects2$algaeStates, "c('black crust','Diatom skin','green skin','litter')='bare';c('Cladophora glomerata attached','Cladophora glomerata loose')='Cladophora'; c('Mougeotia','Zygnema')='Zygnematales';c('Cyanobac filaments','general blue-green algae','Nostoc balls','Nostoc ears','Rivularia')='Cyanobacteria'")
-
-
-table(AlgalTransects2$algaeStates,exclude=NULL)  
-
+  # install.packages ("car") to use "recode" command
+  library(car)
+    
+  levels(AlgalTransects2$algaeStates)
   
+  # recode to desired categories
+    
+  AlgalTransects2$algaeStates <-recode(AlgalTransects2$algaeStates, "c('black crust','Diatom skin','green skin','litter')='bare';c('Cladophora glomerata attached','Cladophora glomerata loose')='Cladophora'; c('Mougeotia','Zygnema')='Zygnematales';c('Cyanobac filaments','general blue-green algae','Nostoc balls','Nostoc ears','Rivularia')='Cyanobacteria'")
+  
+  
+  table(AlgalTransects2$algaeStates,exclude=NULL)  
+
+# Create algal presence/absence variables
 # Create columns for presence/absence of algal functional groups Cladophora, Nostoc/Rivularia, and Zygnematales
 		# edible, filamentous greens: Cladophora
 		# N-fixing cyanobacteria: Rivularia, Nostoc
@@ -124,10 +124,4 @@ table(AlgalTransects2$algaeStates,exclude=NULL)
 	AlgalTransects2$Zyg = as.numeric(AlgalTransects2$algaedom == 'Mougeotia' | AlgalTransects2$algaedom == 'Zygnema' | AlgalTransects2$algaesub == 'Mougeotia' | AlgalTransects2$algaesub == 'Zygnema' | AlgalTransects2$algaesub2 == 'Mougeotia' | AlgalTransects2$algaesub2 == 'Zygnema')
 		
 	AlgalTransects2$Zyg[is.na(AlgalTransects2$Zyg)] = 0
-}
-
-# Create variables combining time and location
-		
-	# create an identifier for each transect-date (ie each survey of a transect)
-	AlgalTransects2$survey = paste(AlgalTransects2$transect,AlgalTransects2$date)		
 
