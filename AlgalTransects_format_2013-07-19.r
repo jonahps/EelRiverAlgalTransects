@@ -42,9 +42,9 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 
   # flooding
     # bankfull flood as defined in Power et al 2008
-    # currently only available 1988-2012
+    # currently only available 1988-2013
 
-  # Flood years for the season preceding summer: 1988-2012
+  # Flood years for the season preceding summer: 1988-2013
   flood = read.table(file.choose(), header=T, sep='\t', quote='')
   # 
   # note that year refers to the algae year, or 'SummerYear', not the water year
@@ -64,7 +64,26 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 
   # integrate flooding data into Algal data base
 
-  AlgalTransects2 = merge(AlgalTransects2,flood, by='year')
+  AlgalTransects2 = merge(AlgalTransects2,flood, by='year',all.x=T)
+
+# Spring spates
+
+  spatesJK = read.table(file.choose(), header=T, sep='\t', quote='')
+  spatesJK2 = cbind(spatesJK[5,],spatesJK[6,2:3],spatesJK[7,2:3])
+  row.names(spatesJK2) = 1
+  spatesJK2[2,] = c(spatesJK[1,],spatesJK[2,2:3],c(NA,NA))
+  spatesJK2[3,] = c(spatesJK[3,],rep(NA,4))
+  spatesJK2[4,] = c(spatesJK[4,],rep(NA,4))
+  spatesJK2[5,] = c(spatesJK[8,],rep(NA,4))
+
+  names(spatesJK2)[2:7] = c('ssMaxDischarge1','ssRdate1','ssMaxDischarge2','ssRdate2','ssMaxDischarge3','ssRdate3')
+
+  spatesMEP = read.table(file.choose(), header=T, sep='\t', quote='')
+
+  # integrate spate data
+
+  AlgalTransects2 = merge(AlgalTransects2,spatesJK2, by='year',all.x=T)
+  AlgalTransects2 = merge(AlgalTransects2,spatesMEP, by='year',all.x=T)
 
 # Create algal variables ##########
 	# Make an integrated Cladophora variable
