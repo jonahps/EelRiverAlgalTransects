@@ -1,9 +1,13 @@
 # Create useful subsets and summaries of algal transect data
 
-# run 'AlgalTransects_format.r' before using this script
+# Read data #######
 
-# Maximum annual Clad height at each survey point #######
-# look at max Clad height for each survey point in each year
+# Algal transects data
+ # file: AlgalTransectsFormatted.txt (created by script 'AlgalTransects_format')
+
+AlgalTransects2 = read.table(file.choose(),sep='\t',header=T,quote='')
+
+# Find max Clad height for each survey point in each year #####
 
   # get max clad height in each year for each point
 
@@ -16,21 +20,39 @@
   # find last survey during grow season
   LastGrowSurvey = aggregate(yearday ~ Transect + year, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=max)
   
-  # get transect points present at last survey in each year
-  WetPoints = AlgalTransects2[which(paste(AlgalTransects2$Transect,AlgalTransects2$year,AlgalTransects2$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('Transect','year','xstrm','yearday','depth','flow','substr')]
-
+  # get transect points present at last survey from growing season in each year
+  WetPoints = AlgalTransects2[which(paste(AlgalTransects2$Transect,AlgalTransects2$year,AlgalTransects2$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('Transect','year','xstrm','yearday','depth')]
+    
   # remove non-integer points
   WetPoints = WetPoints[which(WetPoints$xstrm%%1 == 0),]
-
+  
   # look at width of channel
   
   aggregate(xstrm ~ Transect,data=WetPoints,FUN=min)
   aggregate(xstrm ~ Transect,data=WetPoints,FUN=max)
-
+  
 # Refine Clad Max data to include only wet points
   
   CladMaxPointWet = CladMaxPoint[which(paste(CladMaxPoint$Transect,CladMaxPoint$year,CladMaxPoint$xstrm)%in%paste(WetPoints$Transect,WetPoints$year,WetPoints$xstrm)),]
-  
+
+# add growing season averages of flow, depth, and light
+
+  FlowAvg = aggregate(flow ~ year + Transect + xstrm, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=mean)
+
+  DepthAvg = aggregate(depth ~ year + Transect + xstrm, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=mean)
+
+  CladMaxPointWet = merge(CladMaxPointWet, FlowAvg, all.x=T)
+  CladMaxPointWet = merge(CladMaxPointWet, DepthAvg, all.x=T)
+
+# add substrate data (this still needs work)
+
+  with(WetPoints, table(xstrm,substr,Transect))
+
+  SubAvg = aggregate(substr ~ year + Transect + xstrm, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=mode)
+
+
+# add binary variable for clad growth
+
 # look at distribution of max heights
   library(ggplot2)
 
@@ -45,27 +67,6 @@ CladMaxPointWet$CladGrowth= CladMaxPointWet$CladInt>=10
   
 head(CladMaxPointWet)  
 
-# add growing season averages of flow, depth, and light
-
-  FlowAvg = aggregate(flow ~ year + Transect + xstrm, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=mean)
-
-  DepthAvg = aggregate(depth ~ year + Transect + xstrm, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=mean)
-
-  CladMaxPointWet = merge(CladMaxPointWet, FlowAvg, all.x=T)
-  CladMaxPointWet = merge(CladMaxPointWet, DepthAvg, all.x=T)
-
-  wattavgf = read.csv(file.choose())
-
-  CladMaxPointWet<-merge(CladMaxPointWet,wattavgf, all.x=T)
-
-# add substrate data (this still needs work)
-
-  with(WetPoints, table(xstrm,substr,Transect))
-
-  SubAvg = aggregate(substr ~ year + Transect + xstrm, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=mode)
-
 # write file to .csv
-
-write.csv(CladMaxPointWet, file='CladMaxPointWet.csv', row.names=F)
-
-
+  # file name: 'AlgalTransects_PointCladMaxHeight.csv'
+write.csv(CladMaxPointWet, file=file.choose(), row.names=F)

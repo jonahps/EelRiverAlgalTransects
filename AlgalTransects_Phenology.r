@@ -3,7 +3,12 @@
   # This script use generalized additive mixed models (GAMMs) to visualize seasonal patterns in algal growth
   # it needs work to get it up and running again
 
-  # it uses the data set created by the AlgalTransects_format script
+# Read data #######
+
+# Algal transects data
+ # file: AlgalTransectsFormatted.txt (created by script 'AlgalTransects_format')
+
+AlgalTransects2 = read.table(file.choose(),sep='\t',header=T,quote='')
 
 #Preliminary Analysis and visualization of Clad frequency and growth
   

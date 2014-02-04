@@ -38,7 +38,7 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 	# create an identifier for each transect-date (ie each survey of a transect)
 	AlgalTransects2$survey = paste(AlgalTransects2$transect,AlgalTransects2$date)		
 
-# Add Hydrologic data #######
+# Add Hydrologic data for floods and spring spates #######
 
   # flooding
     # bankfull flood as defined in Power et al 2008
@@ -148,3 +148,7 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 		
 	AlgalTransects2$Zyg[is.na(AlgalTransects2$Zyg)] = 0
 
+# Write processed data file #########
+
+# use file name 'AlgalTransects2'
+write.table(AlgalTransects2, file.choose(), sep='\t', quote=F,row.names=F)

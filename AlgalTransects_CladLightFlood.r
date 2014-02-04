@@ -1,10 +1,24 @@
-# Examine relationship between light, flooding, and Clad growth on an annual basis
+# Examine relationship between light, flooding, and maximum Cladophora height in a given year at each sampling point
 
-# Code created by Jonah P-S October 2013
+# Script created by Jonah P-S October 2013
 
-# first run "Algaltransects_format_2013-07-19.R" script
+# to do 
+  # change to reading in algae data from file
+  # add light info here
 
-# look at max Clad height for each survey point in each year
+# Read data #######
+
+# Maximum clad height at each point in each year
+ # file: AlgalTransects_PointCladMaxHeight.csv (created by script 'AlgalTransects_Summaries')
+
+CladMaxPointWet = read.csv(file.choose(),header=T)
+
+# Light data
+  # LightSummerAvg.csv (created by script 'AlgalTransects_LightSummerAvg')
+
+wattavgf = read.csv(file.choose())
+
+# Find max Clad height for each survey point in each year #####
 
   # get max clad height in each year for each point
 
@@ -17,7 +31,7 @@
   # find last survey during grow season
   LastGrowSurvey = aggregate(yearday ~ Transect + year, data=subset(AlgalTransects2, yearday<=212 & yearday>=91), FUN=max)
   
-  # get transect points present at last survey in each year
+  # get transect points present at last survey from growing season in each year
   WetPoints = AlgalTransects2[which(paste(AlgalTransects2$Transect,AlgalTransects2$year,AlgalTransects2$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('Transect','year','xstrm','yearday','depth')]
     
   # remove non-integer points
@@ -31,8 +45,10 @@
 # Refine Clad Max data to include only wet points
   
   CladMaxPointWet = CladMaxPoint[which(paste(CladMaxPoint$Transect,CladMaxPoint$year,CladMaxPoint$xstrm)%in%paste(WetPoints$Transect,WetPoints$year,WetPoints$xstrm)),]
-  
-# look at distribution of max heights
+
+# Characterize data #########
+
+# look at distribution of max heights 
   library(ggplot2)
 
   hist(log(CladMaxPointWet$CladInt[which(CladMaxPointWet$CladInt>0)], base=10), breaks=20)
@@ -56,13 +72,12 @@ head(CladMaxPointWet)
   
   with(CladMaxPointWet, prop.table(table(Flood,CladGrowth, Transect), margin=c(1,3)))
   
- #Merge the CladMaxPointWet and wattavgf (from "AlgalTransects_SummerAvg.R script") datasets together
- 
+# Add average growing season light input for each transect point to CladMaxPointWet data frame
+  
  	CladMaxPointWet<-merge(CladMaxPointWet,wattavgf)
   	head(CladMaxPointWet,30)
   	tail(CladMaxPointWet)
-  	dim(CladMaxPointWet)
-  	
+  	dim(CladMaxPointWet)  	
   	
  # Initial plots to visualize the data 	
  	library(ggplot2)
