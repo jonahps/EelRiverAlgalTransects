@@ -11,7 +11,7 @@ AlgalTransects2 = read.table(file.choose(),sep='\t',header=T,quote='')
 
   # get max clad height in each year for each point
 
-  CladMaxPoint = aggregate(CladInt ~ Transect + xstrm + year + Flood, data=AlgalTransects2, FUN=max)
+  CladMaxPoint = aggregate(CladInt ~ Transect + xstrm + year + Flood + PrevYearFlood, data=AlgalTransects2, FUN=max)
   
   # find and eliminate points that did not have water during growing season (which starts Apr 1 and ends July 31 - yday=91 thru 212) 
     # use only points that still had water on the last survey of the growing season in each year

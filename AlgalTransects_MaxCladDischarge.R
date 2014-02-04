@@ -34,7 +34,6 @@
     fl<-read.table(file.choose(), header=T, sep='\t', quote='')
     names(fl)[1:2] = c('year',"flood")
     
-    
 # Add julianday, month, and year columns    
     
     dis$Date<-as.Date(dis$Date,"%Y-%m-%d")
@@ -159,11 +158,17 @@
     logc + geom_point(aes(color=flood)) + stat_smooth(method=lm, se=FALSE) + facet_grid(transect~., scales="free_y") + labs(x= "Discharge log(m^3/s)", y="Avg. Max. Clad height (cm)")   
     
     logc + geom_text(aes(color=flood, label=year), size=3) + stat_smooth(method=lm, se=FALSE) + facet_grid(transect~., scales="free_y") + labs(x= "Discharge log(m^3/s)", y="Avg. Max. Clad height (cm)") + ggtitle("Max. Cladophora height and Avg. Discharge\n(May 15 - Aug. 31)")
-
     
     logcMay<-ggplot(data=adis[which(adis$month=="May"),], aes(x=log(dis_cms), y=CladInt, group=transect))
     
     logcMay + geom_point(aes(color=flood)) + stat_smooth(method=lm, se=FALSE) + facet_grid(transect~., scales="free_y")
   
+# average across transects
 
+# compute averages
+    
+adis.avg = aggregate(cbind(CladInt,dis_cms) ~ year + flood,data=adis[which(adis$month=="Season_mean"),], FUN=mean)
+
+# make plot for discharge
+ggplot(data=adis.avg, aes(x=log(dis_cms), y=CladInt)) + geom_text(aes(color=flood, label=year), size=3) + labs(x= "Discharge log(m^3/s)", y="Avg. Max. Clad height (cm)") + ggtitle("Max. Cladophora height and Avg. Discharge\n(May 15 - Aug. 31)") + plot_theme1
     
