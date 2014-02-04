@@ -2,9 +2,11 @@
 
 # Code initialized by KBG July 22, 2013
 
-# Call dataframe "AlgalTransects2" from "AlgalTransects_format_2013-07-19.r" script.
+# Input file =  "AlgalTransectsFormated.txt"
+# created from "AlgalTransects_format.r" script.
 
-plot_theme1<-theme(panel.grid = element_blank(), panel.background = element_blank(), axis.text = element_text(colour="black"), axis.line = element_line(colour="black"))
+  AlgalTransects2<-read.csv(file.choose())
+
 
 # Select data from May to September
 

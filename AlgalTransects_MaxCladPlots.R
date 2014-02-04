@@ -3,7 +3,8 @@
 # created by K. Bouma-Gregson Oct. 2013
 
 
-# Input max clad data (file = CladMaxPointWet.csv)
+# Input max clad data (file = AlgalTransects_PointCladMaxHeight.csv)
+# created from "AlgalTransects_CladLightFlood.r" script
 
 		cml<-read.csv(file.choose())
 		head(cml)

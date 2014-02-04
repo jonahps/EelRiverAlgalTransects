@@ -1,17 +1,19 @@
-## This script takes the txt output file from Collin's light model and transforms it into the long format to be used for manipulations in R. The script also tidy's up the data and renames fields etc.
+## This script takes the txt output file from Collin's light model and transforms it into the long format to be used for manipulations in R. The script also tidys up the data and renames fields etc.
 
 # Created by Keith Bouma-Gregson
 
-# txt file = "LightModel_MaryTransects_originalTXT"]
+# txt file = "LightModel_MaryTransects_originalTXT"
 
-# Column titles: Transect, xstrm = meters along cross section, x = X coordinate, y = Y coordinate, tx = a unique identifier for each point in the dataset, dayXXX = the julian day for the year (data in theis column is in watts-hours / day) 
+# Column titles: Transect, xstrm = meters along each cross section transect, x = georeferencing X coordinate, y = georeferencing Y coordinate, tx = a unique identifier for each point in the dataset, dayXXX = the julian day for the year (data in this column is in watts-hours / day) 
 
 
 
-setwd("/Users/keithgregson/Google Drive/Algal Timeseries/Light Model")
+#setwd("/Users/keithgregson/Documents/UC Berkeley/Jonah Timeseries/Data")
 
 ##	Input the light model transect data
-ld= read.table('LightModel_MaryTransects_originalTXT.txt', header=T, sep='\t', na.strings="NA", fill=T, quote='')
+# filename = 'LightModel_MaryTransects_originalTXT.txt'
+
+ld= read.table(file.choose(), header=T, sep='\t', na.strings="NA", fill=T, quote='')
 
 
 ##	check the data
@@ -42,7 +44,7 @@ ld= read.table('LightModel_MaryTransects_originalTXT.txt', header=T, sep='\t', n
  		s[z]<-doyS[[z]][2]
  		z<-z+1
  	}
-	(ld)[6:57]<-s
+	colnames(ld)[6:57]<-s
 
 ##	Check up on format
 	head(ld)
@@ -64,18 +66,24 @@ ld= read.table('LightModel_MaryTransects_originalTXT.txt', header=T, sep='\t', n
 
 ## Adjust Names of columns
 
-	names(lld)[1]<-"transect"
-	names(lld)[2]<-"xstream"
+	names(lld)[1]<-"Transect"
+	names(lld)[2]<-"xstrm"
 	names(lld)[7]<-"watts"
 
 
 ##	Change "lld$JulianDay"" into a numeric vector and add column for week of the year
-	lld$Julianday<-as.numeric(lld$julianday)
+	lld$julianday<-as.numeric(lld$julianday)
 	lld$week<-as.numeric(as.factor(lld$julianday))
+	rownames(lld)<-seq(1:length(rownames(lld)))
 	
 # Check data
 	
 	head(lld);tail(lld)
+	str(lld)
+	
+# Export data as a .csv file
+	#setwd("/Users/keithgregson/Documents/UC Berkeley/Jonah Timeseries/Data")
+	#write.csv(lld, "lightmodel_clean_long.csv")
 
 
 
