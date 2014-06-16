@@ -210,13 +210,46 @@ tran<-c(2, 2.5, 3, 4)
     for(i in 4:94){
       for(j in 1:4){
         for(k in 0:35){
-          ifelse(which(Adfk$yearday == i & Adfk$Transect == tran[j] & Adfk$xstrmInt == k)>0, Adfk[which(Adfk$yearday == i & Adfk$Transect == tran[j]  & Adfk$xstrmInt == k),"cwatts"]<-cwh[which(cwh$Transect == tran[j]  & cwh$xstrm == k),i])
+          ifelse(which(Adfk$yearday == as.numeric(colnames(cwh))[i] & Adfk$Transect == tran[j] & Adfk$xstrmInt == k)>0, Adfk[which(Adfk$yearday == as.numeric(colnames(cwh))[i] & Adfk$Transect == tran[j]  & Adfk$xstrmInt == k),"cwatts"]<-cwh[which(cwh$Transect == tran[j]  & cwh$xstrm == k),i])
         }
       }
     }
 
 #### Now the cummulative watt hours are in the cwatts column of the main algal dataframe
 
+### Having some issues assigning cumulative watt hours to the algal database####
+s
+tr(Adfk)
+Adfk_check<-Adfk[which(is.na(Adfk$cwatts) == "FALSE"),]
 
+str(Adfk_check)
+table(Adfk_check$yearday)
+
+table(Adfk$yearday)
+
+#### Visualizations of the cwh data frame #####
+library(ggplot2)
+
+dim(cwh)
+
+# Make cwh long
+?reshape
+cwhl<-reshape(data=cwh, timevar="julianday", times= names(cwh[4:94]), varying=list(names(cwh[4:94])), direction="long"); head(cwhl)
+
+colnames(cwhl)[5]<-"watth"
+cwhl<-cwhl[,c(1:5)]
+
+
+## Plot of julian days 99-189
+p1<- ggplot(data=cwhl[which(cwhl$xstrm < 30),], aes(x=julianday, y=watth, group=xstrm))
+
+p1 +geom_line(aes(color=xstrm)) + geom_vline(xintercept=c(22, 53, 74)) + facet_grid(Transect ~ .) + labs(x="Julian Day", y="Watt Hours") + ggtitle("Cumulative Watt Hours (Days 99-189)")+ theme_bw()
+
+
+# Plot of cumulative watt hours on day 185
+
+p2<- ggplot(data=cwhl[which(cwhl$xstrm < 30 & cwhl$julianday == 185),], aes(x=xstrm, y=watth, group=xstrm))
+
+p2 + geom_line(aes(group=Transect), linetype="dotted") + geom_point(size=2) + facet_grid(Transect ~ .)  + labs(x="Cross Stream Distance (m)", y="Cumulative Watt Hours") + ggtitle("Cumulative Watt Hours (Day 185)") + theme_bw()
 
 
