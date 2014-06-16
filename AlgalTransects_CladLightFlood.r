@@ -103,4 +103,12 @@ ggplot(data=cml, aes(x=CladInt+1, color=Flood)) + geom_density() + facet_grid(ju
 
 # flow plots ##########
 
-   p2 + geom_point(alpha=.2, size=2) + geom_smooth(aes(x=xstrm,y=flow*5+1), color='blue',fill='blue',alpha=.2) + facet_grid(.~Transect, scales='free_y') + plot_theme1 + scale_y_log10(limits=c(1,1000)) + geom_smooth(color='green2',fill='green2',se=T, alpha=.3) 
+   p2 + geom_point(alpha=.2, size=2) + geom_smooth(aes(x=xstrm,y=flow*5+1), color='blue',fill='blue',alpha=.2) + facet_grid(.~Transect, scales='free_y') + plot_theme1 + scale_y_log10(limits=c(1,1000)) + geom_smooth(color='green2',fill='green2',se=T, alpha=.3)
+
+# substrate plots
+
+   p2 + geom_point(alpha=.2, size=2) + geom_smooth(aes(x=xstrm,y=(stab*300)+1), color='brown',fill='brown',alpha=.2) + facet_grid(.~Transect, scales='free_y') + plot_theme1 + scale_y_log10(limits=c(1,1000)) + geom_smooth(color='green2',fill='green2',se=T, alpha=.3)
+
+# all spatial predictors
+
+p2 + geom_point(alpha=.2, size=2) + facet_grid(.~Transect, scales='free_y') + plot_theme1 + scale_y_log10(limits=c(1,1000)) + geom_smooth(color='green2',fill='green2',se=T, alpha=.3) +  geom_line(aes(x=xstrm,y=watt_avg/5), color="orangered") +  geom_smooth(data=subset(cml, depth>0),aes(x=xstrm,y=depth*8), color='orchid',fill='orchid',alpha=.3,se=F) + geom_smooth(aes(x=xstrm,y=flow*5+1), color='blue',fill='blue',alpha=.2, se=F) + geom_smooth(aes(x=xstrm,y=flow*5+1), color='blue',fill='blue',alpha=.2, se=F) + geom_smooth(aes(x=xstrm,y=(stab*300)+1), color='brown',fill='brown',alpha=.2,se=F) 
