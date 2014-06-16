@@ -9,6 +9,7 @@
 # Read data #########
 	# use browser to get file from local directory
 	# 2013-08-27_AlgalTransects.txt
+  # latest file from Collin "algae_fm_with_substr.tab"
 
 AlgalTransects = read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='')
 	# fill=TRUE solves problems with unequal row lengths
@@ -27,11 +28,14 @@ sapply(AlgalTransects, class)
 
 # Format dates #########
 
-AlgalTransects$Rdate = as.Date(AlgalTransects$date, format= '%m/%d/%Y')
+AlgalTransects$Rdate = as.Date(AlgalTransects$date)
+
+#AlgalTransects$Rdate = as.Date(AlgalTransects$date, format= '%m/%d/%Y')
 	
-AlgalTransects2 = transform(AlgalTransects, Transect = as.factor(Transect),	month = format(Rdate, '%m'),yearday = as.numeric(format(Rdate, '%j')), year = as.numeric(format(Rdate, '%Y')))
+AlgalTransects2 = transform(AlgalTransects, Transect = as.factor(transect),	month = format(Rdate, '%m'),yearday = as.numeric(format(Rdate, '%j')), year = as.numeric(format(Rdate, '%Y')))
 		
 AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$Rdate,'%m'))<=9, as.character(as.numeric(AlgalTransects2$year)-1), as.character(AlgalTransects2$year)))
+
 
 # Create variables combining time and location #######
   	
@@ -84,6 +88,15 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 
   AlgalTransects2 = merge(AlgalTransects2,spatesJK2, by='year',all.x=T)
   AlgalTransects2 = merge(AlgalTransects2,spatesMEP, by='year',all.x=T)
+
+# Add hydrologic data for discharge variables ###########
+
+# annual summary of growing season
+  # cumulative discharge from Apr 15 - June 21
+
+# growing season to date
+  # average daily mean discharge from Apr 15 - current date
+
 
 # Create algal variables ##########
 	# Make an integrated Cladophora variable
@@ -147,6 +160,7 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 	AlgalTransects2$Zyg = as.numeric(AlgalTransects2$algaedom == 'Mougeotia' | AlgalTransects2$algaedom == 'Zygnema' | AlgalTransects2$algaesub == 'Mougeotia' | AlgalTransects2$algaesub == 'Zygnema' | AlgalTransects2$algaesub2 == 'Mougeotia' | AlgalTransects2$algaesub2 == 'Zygnema')
 		
 	AlgalTransects2$Zyg[is.na(AlgalTransects2$Zyg)] = 0
+
 
 # Write processed data file #########
 
