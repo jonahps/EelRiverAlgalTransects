@@ -18,14 +18,14 @@ ld= read.table(file.choose(), header=T, sep='\t', na.strings="NA", fill=T, quote
 
 ##	check the data
 	dim(ld)
-	sapply(ld,class)
+	str(ld)
 	head(ld)
 
 
 ##	Remove data not a part of a transect
 	ld= ld[!is.na(ld$Transect),];dim(ld)
 
-##	Change ""Transect"" into a factor
+##	Change "Transect" column into a factor
 	ld$Transect<-as.factor(ld$Transect);levels(ld$Transect)
 
 ##	Remove  columns w/o Data
@@ -48,7 +48,7 @@ ld= read.table(file.choose(), header=T, sep='\t', na.strings="NA", fill=T, quote
 
 ##	Check up on format
 	head(ld)
-	sapply(ld, class)
+	str(ld)
 	dim(ld)
 	names(ld)[4:55]
 
@@ -82,8 +82,8 @@ ld= read.table(file.choose(), header=T, sep='\t', na.strings="NA", fill=T, quote
 	str(lld)
 	
 # Export data as a .csv file
-	#setwd("/Users/keithgregson/Documents/UC Berkeley/Jonah Timeseries/Data")
-	#write.csv(lld, "lightmodel_clean_long.csv")
+	#setwd("/Users/keithgregson/Google Drive/Algal Timeseries/Processed data files/Light Model")
+	#write.csv(lld, "LightModl_MarysTransects_clean_long.csv")
 
 
 

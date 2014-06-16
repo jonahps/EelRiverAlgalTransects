@@ -5,8 +5,8 @@
 # Data from Collin Bode's LiDAR irradiance model
 # units of light = watt hours / day
 
-# Input file = "lightmodel_clean_long.csv"
-# this file was the output from the "LightModel_MaryTransects_inputscript.R" script
+# Input file = "lightmodel_MarysTransects_clean_long.csv"
+# this file was the output from the "AlgalTransects_LightModel_inputscript.R" script
 
 	sm<-read.csv(file.choose())
 	
@@ -16,7 +16,7 @@
 	head(sm)
 	str(sm)
 
-# Extract the weeks of the growing season April 1 - August 1 (approximately weeks 13 - 33)
+# Extract the weeks of the growing season April 1 - June 21 (approximately weeks 13 - 33)
 	sml<-sm[which(sm$week >=13 & sm$week <=33),]
 	
 # Drop unused levels in transect factor (artifacts of raw data)
@@ -160,7 +160,7 @@
 	# Write a csv for wattavgf
 		
 		#setwd("/Users/keithgregson/Documents/UC Berkeley/Jonah Timeseries/Data")
-		#write.csv(wattavgf, file="LightSummerAvg.csv")	
+		#write.csv(wattavgf, file="LightModel_MarysTransects_SummerAvg.csv")	
 
 	
 

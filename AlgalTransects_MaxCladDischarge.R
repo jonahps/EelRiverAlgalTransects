@@ -170,5 +170,5 @@
 adis.avg = aggregate(cbind(CladInt,dis_cms) ~ year + flood,data=adis[which(adis$month=="Season_mean"),], FUN=mean)
 
 # make plot for discharge
-ggplot(data=adis.avg, aes(x=log(dis_cms), y=CladInt)) + geom_text(aes(color=flood, label=year), size=3) + labs(x= "Discharge log(m^3/s)", y="Avg. Max. Clad height (cm)") + ggtitle("Max. Cladophora height and Avg. Discharge\n(May 15 - Aug. 31)") + plot_theme1
+ggplot(data=adis.avg, aes(x=log(dis_cms), y=CladInt)) + geom_text(aes(color=flood, label=year), size=3) + labs(x= "Discharge log(m^3/s)", y="Avg. Max. Clad Height (cm)") + ggtitle("Max. Cladophora height and Avg. Discharge\n(May 15 - Aug. 31)") + plot_theme1
     
