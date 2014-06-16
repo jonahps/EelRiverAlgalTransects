@@ -45,6 +45,7 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
     # currently only available 1988-2013
 
   # Flood years for the season preceding summer: 1988-2013
+  # Input file: AngeloBankfullFlood_1988-2013.txt
   flood = read.table(file.choose(), header=T, sep='\t', quote='')
   # 
   # note that year refers to the algae year, or 'SummerYear', not the water year
@@ -68,6 +69,7 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 
 # Spring spates
 
+# File "SpringSpatesJK_8713.txt"
   spatesJK = read.table(file.choose(), header=T, sep='\t', quote='')
   spatesJK2 = cbind(spatesJK[5,],spatesJK[6,2:3],spatesJK[7,2:3])
   row.names(spatesJK2) = 1
@@ -78,6 +80,7 @@ AlgalTransects2$WaterYear = as.factor(ifelse(as.numeric(format(AlgalTransects2$R
 
   names(spatesJK2)[2:7] = c('ssMaxDischarge1','ssRdate1','ssMaxDischarge2','ssRdate2','ssMaxDischarge3','ssRdate3')
 
+# File "SpringSpatesMEP_8713.txt"
   spatesMEP = read.table(file.choose(), header=T, sep='\t', quote='')
 
   # integrate spate data
