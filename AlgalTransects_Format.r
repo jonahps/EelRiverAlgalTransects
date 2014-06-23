@@ -27,10 +27,8 @@ sapply(AlgalTransects, class)
   AlgalTransects[which(AlgalTransects$id==16488),'depth'] = NA
 
 # Format dates #########
-###This line of code without the "format" doesn't work
-AlgalTransects$Rdate = as.Date(AlgalTransects$date)
 
-#AlgalTransects$Rdate = as.Date(AlgalTransects$date, format= '%m/%d/%Y')
+AlgalTransects$Rdate = as.Date(AlgalTransects$date, format= '%m/%d/%Y')
 	
 AlgalTransects2 = transform(AlgalTransects, Transect = as.factor(Transect),	month = format(Rdate, '%m'),yearday = as.numeric(format(Rdate, '%j')), year = as.numeric(format(Rdate, '%Y')))
 		
