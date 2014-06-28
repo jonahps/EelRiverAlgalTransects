@@ -3,7 +3,7 @@
 # Read data #######
 
 # Algal transects data
- # file: AlgalTransectsFormatted.txt (created by script 'AlgalTransects_format')
+ # file: AlgalTransectsFormatted.txt (created by script 'AlgalTransectsFormatted_date')
 
 AlgalTransects2 = read.table(file.choose(),sep='\t',header=T,quote='')
 

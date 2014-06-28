@@ -12,11 +12,17 @@
  # file: AlgalTransects_PointCladMaxHeight.csv (created by script 'AlgalTransects_Summaries')
 
 CladMaxPointWet = read.csv(file.choose(),header=T)
+CladMaxPointWet$xstrmInt <- round(CladMaxPointWet$xstrm, digits = 0)
 
 # Light data
   # LightSummerAvg.csv (created by script 'AlgalTransects_LightSummerAvg')
 
 wattavgf = read.csv(file.choose())
+
+  # Cumulative Watt Hours on the solstice
+    # LightModel_MarysTransects_CumulativeWattHoursSolstice.csv" (created by script "AlgalTransects_LightModel_CumulativeWattHours.R")
+
+  cwatthours<-read.csv(file.choose())
 
 # Spate data
 
@@ -29,7 +35,8 @@ wattavgf = read.csv(file.choose())
 
 #Merge light data into clad max data set
 
-cml = merge(CladMaxPointWet, wattavgf, all.x=T)
+cml = merge(CladMaxPointWet, cwatthours, all.x=T)
+cml = merge(cml, wattavgf, all.x=T)
 
 # merge spate data into clad max data set
 
@@ -39,6 +46,9 @@ cml = merge(cml, spatesMEP, all.x=T)
 
 cml$PrevYearFlood = as.factor(cml$PrevYearFlood)
 cml$PrevYearFlood = replace(cml$PrevYearFlood, which(cml$PrevYearFlood=='NA'),NA)
+
+# Write cml as a .csv "MaxCladPredictors"
+#write.csv(cml, file="MaxCladPredictors_27Jun2014.csv")
 
 # Plot prep ######
 

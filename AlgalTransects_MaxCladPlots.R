@@ -3,12 +3,12 @@
 # created by K. Bouma-Gregson Oct. 2013
 
 
-# Input max clad data (file = AlgalTransects_PointCladMaxHeight.csv)
-# created from "AlgalTransects_CladLightFlood.r" script
+# Input max clad data (file = MaxCladPredictors_date.csv)
+# created from "AlgalTransects_CladLightFlood.R" script
 
-		cml<-read.csv(file.choose())
-		head(cml)
-		str(cml)
+		cml2<-read.csv(file.choose())
+		head(cml2)
+		str(cml2)
 
 # Remove depth outliers
 
@@ -50,10 +50,18 @@
 
 
 # Plot of Clad Height as a function of Irradiance		
-	pl<-ggplot(data=cml, aes(x=watt_avg,y=CladInt,group=Transect))
+	pl<-ggplot(data=cml2, aes(x=watt_avg,y=CladInt,group=Transect))
   
   	pl + geom_point(size=1) + facet_grid(Flood~Transect, scales='free_y', labeller=t_labeller) + labs(x="Irradiance (Avg. Watt Hours / Day)", y="Max. Clad Height (cm)") + ggtitle("Max. Clad. Height as a Function of Irradiance") + plot_themeCML
-  
+
+    
+    
+# Plot of Clad Height as a function of cumulative irradiance  	
+		pl<-ggplot(data=cml2, aes(x=cwatts_solstice,y=CladInt,group=Transect))
+		
+		pl + geom_point(size=1) + facet_grid(~Transect, scales='free_y', labeller=t_labeller) + labs(x="Irradiance (Avg. Watt Hours / Day)", y="Max. Clad Height (cm)") + ggtitle("Max. Clad. Height as a Function of Cumulative Irradiance") + plot_themeCML
+		
+    
 
 # Plot of Clad Height and Irradiance across Channel Cross Section	
 	px<-ggplot(data=cml, aes(x=xstrm,y=CladInt,group=Transect))
@@ -61,7 +69,8 @@
  	px + geom_point() + geom_line(aes(x=xstrm,y=watt_avg/10), color="red") + 
  geom_point(aes(x=xstrm,y=depth*2, alpha=0.5), color="blue") +	
  	facet_grid(Transect~Flood, scales='free_y') + plot_themeCML
- 	
+		
+    
 # Depth and flow
 
 	pdf<-ggplot(data=cml, aes(x=depth,y=flow,group=Transect))
