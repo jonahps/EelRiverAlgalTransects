@@ -11,7 +11,7 @@
 	# 2013-08-27_AlgalTransects.txt
   # latest file from Collin "algae_fm_with_substr.tab"
 
-AlgalTransects = read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='')
+AlgalTransects <- read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='')
 	# fill=TRUE solves problems with unequal row lengths
 	# quote = '' solves the problems created by apostrophes in the data set
 
