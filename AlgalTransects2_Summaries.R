@@ -10,7 +10,7 @@
 ## get max clad height in each year for each point
   CladMaxPoint <- aggregate(CladInt ~ Transect + xstrm + year + Flood + PrevYearFlood , data=AlgalTransects2.sum, FUN= max)
 
-  ## find and eliminate points that did not have water during growing season (which starts Apr 15 and ends July 31 - yday=105 thru 212)
+  ## find and eliminate points that did not have water during growing season (which starts Apr 15 and ends July 31  (yearday= 105 thru 212))
     # use only points that still had water on the last survey of the growing season in each year
       # want transect and survey points from the last survey of each transect in the growing season
 
@@ -18,17 +18,35 @@
   LastGrowSurvey <- aggregate(yearday ~ Transect + year, data=subset(AlgalTransects2.sum, yearday<=212 & yearday>=105), FUN=max)
 
 ## get transect points present at last survey from growing season in each year
-  WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,AlgalTransects2.sum$year,AlgalTransects2.sum$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('Transect','year','xstrm','yearday','depth')]
+  WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,
+                                               AlgalTransects2.sum$year,
+                                               AlgalTransects2.sum$yearday,
+                                               sep='-')
+                                         %in%
+                                           paste(LastGrowSurvey$Transect,
+                                                 LastGrowSurvey$year,
+                                                 LastGrowSurvey$yearday,
+                                                 sep='-')),
+                                   c('Transect', 'year', 'xstrm', 'yearday', 'depth')]
 
 ## remove non-integer points
   WetPoints <- WetPoints[which(WetPoints$xstrm%%1 == 0),]
 
+  table(WetPoints$xstrm%%1 == 0)
+  table(WetPoints$xstrm)
+
 ## look at width of channel
-  aggregate(xstrm ~ Transect,data=WetPoints,FUN=min)
-  aggregate(xstrm ~ Transect,data=WetPoints,FUN=max)
+  aggregate(xstrm ~ Transect, data=WetPoints, FUN=min)
+  aggregate(xstrm ~ Transect, data=WetPoints, FUN=max)
 
 ## Refine Clad Max data to include only wet points
-  CladMaxPointWet <- CladMaxPoint[which(paste(CladMaxPoint$Transect, CladMaxPoint$year, CladMaxPoint$xstrm) %in% paste(WetPoints$Transect, WetPoints$year, WetPoints$xstrm)),]
+  CladMaxPointWet <- CladMaxPoint[which(paste(CladMaxPoint$Transect,
+                                              CladMaxPoint$year,
+                                              CladMaxPoint$xstrm)
+                                        %in%
+                                          paste(WetPoints$Transect,
+                                                WetPoints$year,
+                                                WetPoints$xstrm)), ]
 
 ## add growing season averages of flow, depth, and light
   FlowAvg <- aggregate(flow ~ year + Transect + xstrm,
@@ -46,17 +64,25 @@
     # cobbles=1
     # gravel,mud,pebbles,roots,sand,silt,wood=0
 
-  AlgalTransects2.sum$stab <- as.numeric(with(AlgalTransects2.sum, ifelse(substr=='NAN', NA,
-                                                                          ifelse(substr=='bedrock', 3,
-                                                                                 ifelse(substr=='boulders', 2,
-                                                                                        ifelse(substr=='cobbles', 1, 0
-                                                                                               ))))))
+  AlgalTransects2.sum$stab <- as.numeric(with(AlgalTransects2.sum,
+                                              ifelse(substr=='NAN', NA,
+                                                     ifelse(substr=='bedrock', 3,
+                                                            ifelse(substr=='boulders', 2,
+                                                                   ifelse(substr=='cobbles', 1, 0
+                                                                   ))))))
 
-  SubAvg = aggregate(stab ~ year + Transect + xstrm,
-                     data=subset(AlgalTransects2.sum, yearday<=212 & yearday>=105), FUN=mean)
+  library(plyr)
+  SubAvg <- aggregate(stab ~ year + Transect + xstrm,
+                     data= subset(AlgalTransects2.sum, yearday<=212 & yearday>=105), FUN= mean)
 
-  CladMaxPointWet = merge(CladMaxPointWet,SubAvg,all.x=T)
-
+  SubAvg2 <- ddply(AlgalTransects2.sum[which(AlgalTransects2.sum$yearday<=212 & AlgalTransects2.sum$yearday>=105), ], c("year", "Transect", "xstrm"), summarise,
+                   N = length(stab),
+                   stab.mean = mean(stab, na.rm= T),
+                   stab.sd = sd(stab, na.rm= T)
+                   )
+  subset(SubAvg2, Transect == 2)
+  CladMaxPointWet = merge(CladMaxPointWet, SubAvg, all.x=T)
+?ddply
 #### Add binary variable for clad growth ####
 
 ## Look at distribution of max heights
