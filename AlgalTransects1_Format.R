@@ -13,7 +13,7 @@
 #### Read in Data format data ####
 	# use browser to get file from local directory
 ## Original file: 2013-08-27_AlgalTransects.txt (no substrate data)
-  # Latest file from Collin: "2014-02-03_AlgalTransects_substrate.tab" (includes 6800 substrate entries, but missing 293 entries) USE THIS FILE
+  # Latest file from Collin: "2014-02-03_AlgalTransects_substrate.tab" (includes 6800 substrate entries, but missing 293 entries from 2013-08-27_AlgalTransects.txt file) USE THIS FILE
 
   AlgalTransects <- read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='', stringsAsFactors= FALSE)
 	# fill=TRUE solves problems with unequal row lengths
@@ -23,10 +23,10 @@
   # from the latest file
   # Read CSV file = MissingRowsFrom_2014-02-03_File.csv
     # CSV created in "AlgalTransects_FilemakerFileComparison.R" script
-  missing.substrate <- read.csv(file.choose(), stringsAsFactors= FALSE)
+  missing.rows <- read.csv(file.choose(), stringsAsFactors= FALSE)
 
   # Merge two data frames together
-  AlgalTransects2 <- merge(AlgalTransects, missing.substrate, all= TRUE)
+  AlgalTransects2 <- merge(AlgalTransects, missing.rows, all= TRUE)
 
 
 #### Format Columns ####
@@ -241,5 +241,5 @@
   #str(AlgalTransectsWrite)
 
 # use dataframe name 'AlgalTransectsWrite'
-  #write.table(AlgalTransectsWrite, file="AlgalTransectsFormatted_2.txt", sep='\t', quote=F, row.names= F)
+  #write.table(AlgalTransectsWrite, file="AlgalTransectsFormatted_substrate.txt", sep='\t', quote=F, row.names= F)
 
