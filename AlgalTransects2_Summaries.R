@@ -8,54 +8,49 @@
 
 #### Find max Clad height for each survey point in each year #####
 ## get max clad height in each year for each point
-  CladMaxPoint <- aggregate(CladInt ~ Transect + xstrm + year + Flood + PrevYearFlood , data=AlgalTransects2.sum, FUN= max)
+  CladMaxPoint <- aggregate(CladInt ~ transect + xstrm + year + Flood + PrevYearFlood , data=AlgalTransects2.sum, FUN= max)
 
   ## find and eliminate points that did not have water during growing season (which starts Apr 15 and ends July 31 - yday=105 thru 212)
     # use only points that still had water on the last survey of the growing season in each year
       # want transect and survey points from the last survey of each transect in the growing season
 
 ## find last survey during grow season
-  LastGrowSurvey <- aggregate(yearday ~ Transect + year, data=subset(AlgalTransects2.sum, yearday<=212 & yearday>=105), FUN=max)
+  LastGrowSurvey <- aggregate(yearday ~ transect + year, data=subset(AlgalTransects2.sum, yearday<=212 & yearday>=105), FUN=max)
 
 ## get transect points present at last survey from growing season in each year
-  WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,AlgalTransects2.sum$year,AlgalTransects2.sum$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('Transect','year','xstrm','yearday','depth')]
+  WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,AlgalTransects2.sum$year,AlgalTransects2.sum$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('transect','year','xstrm','yearday','depth')]
 
 ## remove non-integer points
   WetPoints <- WetPoints[which(WetPoints$xstrm%%1 == 0),]
 
 ## look at width of channel
-  aggregate(xstrm ~ Transect,data=WetPoints,FUN=min)
-  aggregate(xstrm ~ Transect,data=WetPoints,FUN=max)
+  aggregate(xstrm ~ transect, data= WetPoints,FUN=min)
+  aggregate(xstrm ~ transect, data= WetPoints,FUN=max)
 
 ## Refine Clad Max data to include only wet points
-  CladMaxPointWet <- CladMaxPoint[which(paste(CladMaxPoint$Transect, CladMaxPoint$year, CladMaxPoint$xstrm) %in% paste(WetPoints$Transect, WetPoints$year, WetPoints$xstrm)),]
+  CladMaxPointWet <- CladMaxPoint[which(paste(CladMaxPoint$transect,
+                                              CladMaxPoint$year,
+                                              CladMaxPoint$xstrm)
+                                        %in%
+                                          paste(WetPoints$transect,
+                                                WetPoints$year,
+                                                WetPoints$xstrm)),]
 
 ## add growing season averages of flow, depth, and light
-  FlowAvg <- aggregate(flow ~ year + Transect + xstrm,
+  FlowAvg <- aggregate(flow ~ year + transect + xstrm,
                        data= subset(AlgalTransects2.sum, yearday<=212 & yearday>=105), FUN=mean)
-  DepthAvg <- aggregate(depth ~ year + Transect + xstrm,
+  DepthAvg <- aggregate(depth ~ year + transect + xstrm,
                         data= subset(AlgalTransects2.sum, yearday<=212 & yearday>=105), FUN=mean)
 
   CladMaxPointWet <- merge(CladMaxPointWet, FlowAvg, all.x=T)
   CladMaxPointWet <- merge(CladMaxPointWet, DepthAvg, all.x=T)
 
-#### Add substrate data (this still needs work) ####
-  # create stability index
-    # bedrock=3
-    # boulders=2
-    # cobbles=1
-    # gravel,mud,pebbles,roots,sand,silt,wood=0
+#### Calculate average substrate stability for each xstrm in each year ####
+  #SubAvg = aggregate(stab ~ year + transect + xstrm,
+                     #data=subset(AlgalTransects2.sum, yearday<=212 & yearday>=105),
+                     #FUN=mean)
 
-  AlgalTransects2.sum$stab <- as.numeric(with(AlgalTransects2.sum, ifelse(substr=='NAN', NA,
-                                                                          ifelse(substr=='bedrock', 3,
-                                                                                 ifelse(substr=='boulders', 2,
-                                                                                        ifelse(substr=='cobbles', 1, 0
-                                                                                               ))))))
-
-  SubAvg = aggregate(stab ~ year + Transect + xstrm,
-                     data=subset(AlgalTransects2.sum, yearday<=212 & yearday>=105), FUN=mean)
-
-  CladMaxPointWet = merge(CladMaxPointWet,SubAvg,all.x=T)
+  #CladMaxPointWet <- merge(CladMaxPointWet,SubAvg,all.x=T)
 
 #### Add binary variable for clad growth ####
 
@@ -63,7 +58,7 @@
   library(ggplot2)
   hist(log(CladMaxPointWet$CladInt[which(CladMaxPointWet$CladInt>0)], base=10), breaks=20)
 
-  MaxHeight_p1 <- ggplot(data=subset(CladMaxPointWet, CladInt>0), aes(x=CladInt)) + geom_density() + facet_grid(.~Transect) + scale_x_continuous(limits=c(0,50))
+  MaxHeight_p1 <- ggplot(data=subset(CladMaxPointWet, CladInt>0), aes(x=CladInt)) + geom_density() + facet_grid(.~transect) + scale_x_continuous(limits=c(0,50))
   MaxHeight_p1
 
 ## use 10 cm as a cutoff: >10 = Clad growth, <10 no growth
@@ -72,12 +67,13 @@
   head(CladMaxPointWet)
 
 ## write file to .csv
-  #setwd("/Users/keithgregson/Google Drive/Algal Timeseries/Processed data files/Algae")
   #write.csv(CladMaxPointWet, file="AlgalTransects_PointCladMaxHeight.csv", row.names=F)
 
-# Find most common substrate at each point during the growth season ######
-
 ###### Jonah's previous script (I don't understand what tranxstr is) ####
+
+
+## Find most common substrate at each point during the growth season
+
 library(ggplot2)
 
 names(AlgalTransects2.sum)
@@ -92,13 +88,13 @@ hist(log(PtsSampled$substr,10))
 
  # Find how much substrate data at exists at xstrm point in each year
 
-subLength <- aggregate(substr ~ Transect + xstrm + year, data=AlgalTransects2.sum, FUN=length)
+subLength <- aggregate(substr ~ transect + xstrm + year, data=AlgalTransects2.sum, FUN=length)
 
 str(subLength)
 unique(subLength$substr)
 hist(subLength$substr)
 
-subMode <- aggregate(as.numeric(substr) ~ Transect + xstrm + year, data=AlgalTransects2.sum, FUN=mode)
+subMode <- aggregate(as.numeric(substr) ~ transect + xstrm + year, data=AlgalTransects2.sum, FUN=mode)
 
 str(subMode)
 unique(subMode$substr)
