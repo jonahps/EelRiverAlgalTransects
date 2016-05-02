@@ -4,15 +4,15 @@
 
 # Input file =  "AlgalTransectsFormatted.txt"
 # created from "AlgalTransects_format.r" script.
+  AlgalTransects2.states <- read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='')
+  head(AlgalTransects2.states)
+  str(AlgalTransects2.states)
 
-  AlgalTransects2<-read.table(file.choose())
-  head(AlgalTransects2)
-
-## Select data from May to September
-	astates <- AlgalTransects2[which(as.numeric(AlgalTransects2$month) >= 5 & as.numeric(AlgalTransects2$month) <= 9 & AlgalTransects2$depth >= 0 ),]
-	head(astates)
-	#dim(astates)
-  table(astates$depth,exclude=NULL)
+## Select data from April to September
+  AlgalTransects2.states$depth <- as.numeric(AlgalTransects2.states$depth)
+	astates <- AlgalTransects2.states[which(as.numeric(AlgalTransects2.states$month) >= 4 &
+	                                   as.numeric(AlgalTransects2.states$month) <= 9 &
+	                                   AlgalTransects2.states$depth > 0 ),]
 
 ## Round xstrm to nearest 1 meter
 	astates$xstrmRnd <- (round((astates$xstrm),0))
@@ -20,34 +20,40 @@
 
 ## Change TwoYears column to a factor
 	astates$TwoYears <- as.factor(astates$TwoYears)
-	astates$TwoYears <- factor(astates$TwoYears,levels(astates$TwoYears)[c(1,2,4,5,3)])
+	astates$TwoYears <- factor(astates$TwoYears,
+	                           levels(astates$TwoYears)[c(1, 2, 4, 5, 3)])
 	#table(astates$TwoYears)
 
 ## Reformat algaedom column
 	# Change NA to "bare"
-	astates$algaeStates<-factor(astates$algaedom, levels = c(levels(astates$algaedom),"bare"))
-	b  <- which(is.na(astates$algaeStates)==TRUE)
-	astates$algaeStates[b]<-"bare"
+	astates$algaeStates <- factor(astates$algaedom,
+	                              levels = c(levels(astates$algaedom), "bare"))
+	b <- which(is.na(astates$algaeStates) == TRUE)
+	astates$algaeStates[b] <- "bare"
 
-## Remove rows with algal classes we are not interested in, and then drop the unused levels
-	astates <- astates[which(astates$algaeStates != "black crust" & astates$algaeStates != "green skin" & astates$algaeStates != "general blue-green algae" & astates$algaeStates != "Cyanobac filaments" & astates$algaeStates != "litter"),]
+## Remove rows with algal classes we are not interested in (due to infrequent observations), and then drop the unused levels
+	# table(astates$algaeStates, exclude= NULL)
+	astates <- astates[which(astates$algaeStates != "black crust" &
+	                           astates$algaeStates != "green skin" &
+	                           astates$algaeStates != "general blue-green algae" &
+	                           astates$algaeStates != "Cyanobac filaments" &
+	                           astates$algaeStates != "litter"),]
 
-## Combine some levels together
+  ## Combine some levels together
 	# install.packages ("car") to use "recode" command
 	library(car)
 
 	astates$algaeStates <- recode(astates$algaeStates, " 'diatom skin' = 'Diatom skin' ")
-	astates$algaeStates <- recode(astates$algaeStates, " 'Cladophora glomerata loose' = 'Cladophora glomerata attached' ")
+	astates$algaeStates <- recode(astates$algaeStates,
+	                              " 'Cladophora glomerata loose' =
+	                              'Cladophora glomerata attached' ")
 	astates$algaeStates <- droplevels(astates$algaeStates)
-
-	table(astates$algaeStates, exclude=NULL)
+	#table(astates$algaeStates, exclude=NULL)
 
 # Drop the cross section widths that rarely have data
 # T2<15m wide; T2.5<20m; T3<29m; T4<30m
-
-	## Why doesn't this code work?
-	##astatesT<-astates[-which(as.numeric(astates$Transect) == 2 & astates$xstrmRnd >= 16),]
-
+	#astatesT2 <- astates[which(as.numeric(astates$Transect) == 2 & astates$xstrmRnd <= 16), ]
+	#unique(astatesT$xstrmRnd)
 
 #### Plot the Data ####
 	library(ggplot2)
@@ -56,12 +62,15 @@
 	kbgPal1 <- c("#ED2A5B", "#6E645A", "#3474AE", "#D6E29A", "#400B1E", "#F3C6D1", "#CD5A01", "#951475", "#4E8921", "#DF9DF1")
 
 ## Plot the frequency of each algal class at each point in transect 2, stream channel usually narrower than 15m
-	p2 <- ggplot(data=astates[which(astates$Transect==2 & astates$xstrmRnd <= 15 ),], aes(x= xstrmRnd, factor= algaeStates))
+	p2 <- ggplot(data=astates[which(astates$Transect==2 & astates$xstrmRnd <= 16),], aes(x= xstrmRnd, factor= algaeStates))
+
 	p2 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaeStates, scales = "free_y") + ggtitle("Transect 2")
+
 	p2 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2")
 
 # Plot the frequency of each algal class at each point in transect 2.5, stream channel usually narrower than 20m
 	p2.5 <- ggplot(data=astates[which(astates$Transect==2.5 & astates$xstrmRnd <= 15),], aes(x= xstrmRnd, factor= algaeStates))
+
 	p2.5 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaeStates, scales = "free_y") + plot_theme1 + ggtitle("Transect 2.5")
 	p2.5 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2.5")
 	p2.5 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1)) + ggtitle("Transect 2.5")
@@ -82,13 +91,17 @@
 
 	# Create a dataefram with a column for transect, xstrmRnd, algalState, Flood, and frequency of algal state
 
-		stateFreq<-aggregate(astates$algaeStates,list(astates$xstrmRnd, astates$algaeStates, astates$Transect,astates$Flood,astates$TwoYears),length)
+		stateFreq <- aggregate(astates$algaeStates, list(astates$xstrmRnd,
+		                                                 astates$algaeStates,
+		                                                 astates$Transect,
+		                                                 astates$Flood,
+		                                                 astates$TwoYears),
+		                       length)
 
 		colnames(stateFreq)<-c("xstrmRnd","algaeState", "Transect","Flood","TwoYears","Freq")
 
 
 	#reshape stateFreq into wide format with each column a specific algal class, each row the xstrmRnd and the freq as the data
-
 		library(reshape2)
 
 		stateFreqw<-reshape(stateFreq, v.names = "Freq", timevar="algaeState" , idvar=c("xstrmRnd","Transect","Flood","TwoYears"), direction="wide")
