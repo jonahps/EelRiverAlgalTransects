@@ -2,7 +2,7 @@
 
 ## Read in data
   # Algal transects data
-  # file: AlgalTransectsFormatted.txt (created by script 'AlgalTransects_Format')
+  # file: AlgalTransectsFormatted_substrate_discharge.txt (created by script 'AlgalTransects_Format')
 
   AlgalTransects2.sum <- read.table(file.choose(),sep='\t',header=T,quote='')
 
@@ -21,7 +21,8 @@
   WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,AlgalTransects2.sum$year,AlgalTransects2.sum$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('transect','year','xstrm','yearday','depth')]
 
 ## remove non-integer points
-  WetPoints <- WetPoints[which(WetPoints$xstrm%%1 == 0),]
+  #WetPoints <- WetPoints[which(WetPoints$xstrm%%1 == 0),]
+
 
 ## look at width of channel
   aggregate(xstrm ~ transect, data= WetPoints,FUN=min)
@@ -36,6 +37,9 @@
                                                 WetPoints$year,
                                                 WetPoints$xstrm)),]
 
+## Round the non-integer xstrm points
+  CladMaxPointWet$xstrm.rnd <- round(CladMaxPointWet$xstrm, 0)
+
 ## add growing season averages of flow, depth, and light
   FlowAvg <- aggregate(flow ~ year + transect + xstrm,
                        data= subset(AlgalTransects2.sum, yearday<=212 & yearday>=105), FUN=mean)
@@ -46,11 +50,13 @@
   CladMaxPointWet <- merge(CladMaxPointWet, DepthAvg, all.x=T)
 
 #### Calculate average substrate stability for each xstrm in each year ####
-  #SubAvg = aggregate(stab ~ year + transect + xstrm,
-                     #data=subset(AlgalTransects2.sum, yearday<=212 & yearday>=105),
-                     #FUN=mean)
+  sub.stab.mean = aggregate(stab ~ year + transect + xstrm,
+                     data=subset(AlgalTransects2, yearday<=212 & yearday>=105),
+                     FUN=mean)
+  names(sub.stab.mean)[4] <- "mean.stab"
+  str(sub.stab.mean)
 
-  #CladMaxPointWet <- merge(CladMaxPointWet,SubAvg,all.x=T)
+  CladMaxPointWet <- merge(CladMaxPointWet, sub.stab.mean, all.x=T)
 
 #### Add binary variable for clad growth ####
 
@@ -66,8 +72,10 @@
 
   head(CladMaxPointWet)
 
-## write file to .csv
+####  Write file to .csv ####
   #write.csv(CladMaxPointWet, file="AlgalTransects_PointCladMaxHeight.csv", row.names=F)
+
+
 
 ###### Jonah's previous script (I don't understand what tranxstr is) ####
 

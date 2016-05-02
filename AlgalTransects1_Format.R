@@ -126,12 +126,21 @@
 
 
 #### Add hydrologic data for discharge variables ####
+  # the following two .txt files were created in the script:
+  # "GrowthSeasonDischarge_2014-06-06.R"
   # annual summary of growing season =
   # cumulative discharge from Apr 15 - June 21
+  # File = "GrowSeason_TotalDischarge.txt"
+  tot.discharge <- read.table(file.choose(), sep='\t', header=T)
+  names(tot.discharge)[2] <- "discharge_cms"
+  AlgalTransects2 <- merge(AlgalTransects2, tot.discharge)
 
-  # growing season to date =
+    # growing season to date =
   # average daily mean discharge from Apr 15 - current date
-
+  # File = "GrowSeason_MeanDischargeByDay.txt"
+  mean.daily.discharge <- read.table(file.choose(), sep='\t', header=T)
+  names(mean.daily.discharge)[2] <- "yearday"
+  AlgalTransects2 <- merge(AlgalTransects2, mean.daily.discharge, all.x =  T)
 
 #### Substrate stability ####
   # create stability index of substrate
@@ -169,7 +178,7 @@
   #levels(AlgalTransects2$algaeStates)
 
   # recode to desired categories
-  AlgalTransects2$algaeStates <-recode(AlgalTransects2$algaeStates,
+  AlgalTransects2$algaeStates <- recode(AlgalTransects2$algaeStates,
                                        "c('black crust','Diatom skin','green skin','litter') = 'bare';
                                        c('Cladophora glomerata attached','Cladophora glomerata loose')= 'Cladophora';
                                        c('Mougeotia','Zygnema')= 'Zygnematales';
@@ -241,5 +250,5 @@
   #str(AlgalTransectsWrite)
 
 # use dataframe name 'AlgalTransectsWrite'
-  #write.table(AlgalTransectsWrite, file="AlgalTransectsFormatted_substrate.txt", sep='\t', quote=F, row.names= F)
+  # write.table(AlgalTransectsWrite, file="AlgalTransectsFormatted_substrate_discharge.txt", sep='\t', quote=F, row.names= F)
 
