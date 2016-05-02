@@ -52,25 +52,13 @@
 ## Create palate for plots (www.iwanthue.com)
 	kbgPal1 <- c("#ED2A5B", "#6E645A", "#3474AE", "#D6E29A", "#400B1E", "#F3C6D1", "#CD5A01", "#951475", "#4E8921", "#DF9DF1")
 
-## Plot the frequency of each algal class at each point in transect 2
+## Plot the frequency of each algal class at each point across the transect
 	p2 <- ggplot(data=astates, aes(x= xstrmInt, factor= algaeStates))
-	p2 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaeStates, scales = "free_y") + ggtitle("Transect 2")
-	p2 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2")
-
-# Plot the frequency of each algal class at each point in transect 2.5
-	p2.5 <- ggplot(data=astates, aes(x= xstrmInt, factor= algaeStates))
-	p2.5 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaeStates, scales = "free_y") + plot_theme1 + ggtitle("Transect 2.5")
-	p2.5 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 2.5")
-	p2.5 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1)) + ggtitle("Transect 2.5")
-
-# Plot the frequency of each algal class at each point in transect 3
-	p3 <- ggplot(data=astates, aes(x= xstrmInt, factor= algaeStates))
-	p3 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaeStates, scales = "free_y") + plot_theme1 + ggtitle("Transect 3")
-	p3 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 3")
-	p3 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 3")
+	p2 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(transect ~ algaeStates, scales = "free_y") + theme_bw()
+	p2 + geom_histogram(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(transect~month) + theme_bw()
 
 # Plot the frequency of each algal class at each point in transect 4, stream channel usually narrower than 30m
-	p4 <- ggplot(data=astates, aes(x= xstrmInt, factor= algaeStates))
+	p4 <- ggplot(data=astates[which(astates$tranect == 4), ], aes(x= xstrmInt, factor= algaeStates))
 	p4 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(~ algaeStates, scales = "free_y") + plot_theme1 + ggtitle("Transect 4")
 	p4 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 4")
 	p4 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 4")
@@ -87,13 +75,13 @@
 	yd.p.NosRiv + geom_point(size= 2) + stat_smooth(se=FALSE, method= "loess") + facet_grid(Flood ~ transect) + theme_bw(base_size = 22)
 
 ## Plot Substrate Stability and Presence/Absence
-	sub.p.Clad <- ggplot(astates[which(astates$transect == "2"), ], aes(x= as.factor(Clad)))
+	sub.p.Clad <- ggplot(astates[which(astates$transect == "2"), ], aes(x= factor(Clad)))
 	sub.p.Clad + geom_bar(size= 2)  + facet_grid(.~ stab) + theme_bw(base_size = 22)
 
-	sub.p.Zyg <- ggplot(astates[which(astates$transect == "2"), ], aes(x= as.factor(Zyg)))
+	sub.p.Zyg <- ggplot(astates[which(astates$transect == "2"), ], aes(x= factor(Zyg)))
 	sub.p.Zyg + geom_bar(size= 2)  + facet_grid(.~ stab) + theme_bw(base_size = 22)
 
-	sub.p.NosRiv <- ggplot(astates[which(astates$transect == "2"), ], aes(x= as.factor(NosRiv)))
+	sub.p.NosRiv <- ggplot(astates[which(astates$transect == "2"), ], aes(x= factor(NosRiv)))
 	sub.p.NosRiv + geom_bar(size= 2)  + facet_grid(.~ stab) + theme_bw(base_size = 22)
 
 
