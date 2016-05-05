@@ -17,13 +17,13 @@
   # average watt hours/day at each xstrm
   # LightModel_MarysTransects_SummerAvg.csv (created by script 'AlgalTransects_LightSummerAvg')
   wattavgf <- read.csv(file.choose())
-  names(wattavgf)[2] <- "xstrm.rnd"
+  names(wattavgf)[2] <- "xstrm"
 
 
   # Cumulative Watt Hours on the solstice
     # LightModel_MarysTransects_CumulativeWattHoursSolstice.csv" (created by script "AlgalTransects_LightModel_CumulativeWattHours.R")
   cwatthours <- read.csv(file.choose())
-  names(cwatthours)[2] <- "xstrm.rnd"
+  names(cwatthours)[2] <- "xstrm"
 
 ## Cumulative discharge for growing season
   # cumulative discharge from Apr 15 - June 21

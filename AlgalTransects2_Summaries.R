@@ -21,7 +21,7 @@
   WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,AlgalTransects2.sum$year,AlgalTransects2.sum$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('transect','year','xstrm','yearday','depth')]
 
 ## remove non-integer points
-  #WetPoints <- WetPoints[which(WetPoints$xstrm%%1 == 0),]
+  WetPoints <- WetPoints[which(WetPoints$xstrm%%1 == 0),]
 
 
 ## look at width of channel
@@ -37,8 +37,6 @@
                                                 WetPoints$year,
                                                 WetPoints$xstrm)),]
 
-## Round the non-integer xstrm points
-  CladMaxPointWet$xstrm.rnd <- round(CladMaxPointWet$xstrm, 0)
 
 ## add growing season averages of flow, depth, and light
   FlowAvg <- aggregate(flow ~ year + transect + xstrm,
@@ -51,7 +49,7 @@
 
 #### Calculate average substrate stability for each xstrm in each year ####
   sub.stab.mean = aggregate(stab ~ year + transect + xstrm,
-                     data=subset(AlgalTransects2, yearday<=212 & yearday>=105),
+                     data=subset(AlgalTransects2.sum, yearday<=212 & yearday>=105),
                      FUN=mean)
   names(sub.stab.mean)[4] <- "mean.stab"
   str(sub.stab.mean)
@@ -73,7 +71,7 @@
   head(CladMaxPointWet)
 
 ####  Write file to .csv ####
-  #write.csv(CladMaxPointWet, file="AlgalTransects_PointCladMaxHeight.csv", row.names=F)
+  write.csv(CladMaxPointWet, file="AlgalTransects_PointCladMaxHeight.csv", row.names=F)
 
 
 
