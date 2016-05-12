@@ -71,7 +71,7 @@
   head(CladMaxPointWet)
 
 ####  Write file to .csv ####
-  write.csv(CladMaxPointWet, file="AlgalTransects_PointCladMaxHeight.csv", row.names=F)
+  #write.csv(CladMaxPointWet, file="AlgalTransects_PointCladMaxHeight.csv", row.names=F)
 
 
 
