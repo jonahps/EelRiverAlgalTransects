@@ -12,9 +12,12 @@
   # file: AlgalTransects_PointCladMaxHeight.csv (created by script 'AlgalTransects_Summaries')
   CladMaxPointWet.clf <- read.csv(file.choose(),header=T)
   #CladMaxPointWet.clf$xstrmInt <- round(CladMaxPointWet.clf$xstrm, digits = 0)
+<<<<<<< HEAD
 
 ## Remove negative depths
   CladMaxPointWet.clf <- CladMaxPointWet.clf[which(CladMaxPointWet.clf$depth > 0), ]
+=======
+>>>>>>> master
 
 ## Light data
   # average watt hours/day at each xstrm

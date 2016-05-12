@@ -9,12 +9,15 @@
   str(AlgalTransects2.states)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Select data from April to September
   AlgalTransects2.states$depth <- as.numeric(AlgalTransects2.states$depth)
 	astates <- AlgalTransects2.states[which(as.numeric(AlgalTransects2.states$month) >= 4 &
 	                                   as.numeric(AlgalTransects2.states$month) <= 9 &
 	                                   AlgalTransects2.states$depth > 0 ),]
 =======
+=======
+>>>>>>> master
   AlgalTransects2<-read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='')
   AlgalTransects2$Rdate <- as.Date(AlgalTransects2$Rdate, "%Y-%m-%d")
   AlgalTransects2$depth <- as.numeric(as.character(AlgalTransects2$depth))
@@ -23,6 +26,7 @@
 
 ## Select data from April to September
 	astates <- AlgalTransects2[which(as.numeric(AlgalTransects2$month) >= 4 & as.numeric(AlgalTransects2$month) <= 9 & AlgalTransects2$depth >= 0 ),]
+<<<<<<< HEAD
 >>>>>>> master
 
 
@@ -84,6 +88,31 @@
 
   astates <- astatesT
 
+=======
+
+
+## Change TwoYears column to a factor
+	#astates$TwoYears <- as.factor(astates$TwoYears)
+	#astates$TwoYears <- factor(astates$TwoYears, levels(astates$TwoYears)[c(1,2,4,5,3)])
+	#table(astates$TwoYears)
+
+
+## Drop the cross section widths that rarely have data
+   # T2<15m wide; T2.5<20m; T3<29m; T4<26m
+
+	trans <- as.factor(c("2", "2.5", "3", "4"))
+  width <- c(16, 21, 30, 26)
+  astatesT <- astates
+  for (i in 1:4){
+    astatesT <- astatesT[-which(astatesT$transect == trans[i] &
+                             astatesT$xstrmInt >= width[i]), ]
+  }
+  # head(astatesT)
+  # table(astatesT$transect, astatesT$xstrmInt, exclude= NULL)
+
+  astates <- astatesT
+
+>>>>>>> master
 #### Investigate the data ####
   table(astates$Flood)
   prop.table(table(astates$Flood, astates$algaeStates), 2)
@@ -93,6 +122,9 @@
     sum(astates[which(astates$Flood == "no flood" & astates$Clad == 1),  "Clad"])
   571/2022
  length(astates[which(astates$Flood == "no flood"),  "Clad"])
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 
 #### Plot the Data ####
@@ -101,6 +133,7 @@
 ## Create palate for plots (www.iwanthue.com)
 	kbgPal1 <- c("#ED2A5B", "#6E645A", "#3474AE", "#D6E29A", "#400B1E", "#F3C6D1", "#CD5A01", "#951475", "#4E8921", "#DF9DF1")
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 ## Plot the frequency of each algal class at each point in transect 2, stream channel usually narrower than 15m
 	p2 <- ggplot(data=astates[which(astates$Transect==2 & astates$xstrmRnd <= 16),], aes(x= xstrmRnd, factor= algaeStates))
@@ -122,10 +155,15 @@
 	p3 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(.~month) + ggtitle("Transect 3")
 	p3 + geom_bar(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ ggtitle("Transect 3")
 =======
+=======
+>>>>>>> master
 ## Plot the frequency of each algal class at each point across the transect
 	p2 <- ggplot(data=astates, aes(x= xstrmInt, factor= algaeStates))
 	p2 + geom_histogram(stat="bin", binwidth = 1) + facet_grid(transect ~ algaeStates, scales = "free_y") + theme_bw()
 	p2 + geom_histogram(stat="bin", binwidth = 1, aes(fill= algaeStates)) + plot_theme1 + scale_fill_manual(values = c(kbgPal1))	+ facet_grid(transect~month) + theme_bw()
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 
 # Plot the frequency of each algal class at each point in transect 4, stream channel usually narrower than 30m
@@ -154,12 +192,25 @@
 
 	sub.p.NosRiv <- ggplot(astates[which(astates$transect == "2"), ], aes(x= factor(NosRiv)))
 	sub.p.NosRiv + geom_bar(size= 2)  + facet_grid(.~ stab) + theme_bw(base_size = 22)
+<<<<<<< HEAD
+
+
+#### Calculate a diversity index for astates$AlgaeStates at each xstrmInt point ####
+=======
 
 
 #### Calculate a diversity index for astates$AlgaeStates at each xstrmInt point ####
 
 	# Create a dataframe with a column for transect, xstrmInt, algalState, Flood, and frequency of algal state
 
+		stateFreq<-aggregate(astates$algaeStates,list(astates$xstrmInt, astates$algaeStates, astates$Transect,astates$Flood,astates$TwoYears),length)
+
+		colnames(stateFreq)<-c("xstrmInt","algaeState", "Transect","Flood","TwoYears","Freq")
+>>>>>>> master
+
+	# Create a dataframe with a column for transect, xstrmInt, algalState, Flood, and frequency of algal state
+
+<<<<<<< HEAD
 <<<<<<< HEAD
 		stateFreq <- aggregate(astates$algaeStates, list(astates$xstrmRnd,
 		                                                 astates$algaeStates,
@@ -177,6 +228,8 @@
 <<<<<<< HEAD
 	#reshape stateFreq into wide format with each column a specific algal class, each row the xstrmRnd and the freq as the data
 =======
+=======
+>>>>>>> master
 	#reshape stateFreq into wide format with each column a specific algal class, each row the xstrmInt and the freq as the data
 
 >>>>>>> master

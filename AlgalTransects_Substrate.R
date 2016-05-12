@@ -1,7 +1,11 @@
 ## Investigate substrate variation at each xstrm within each year
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Use a stability index:  bedrock=3, boulders=2, cobbles=1, gravel,mud,pebbles,roots,sand,silt,wood=0
+=======
+## Use a stability index: roots= 4  bedrock= 3, boulders= 2, cobbles= 1, gravel,mud,pebbles,sand,silt,wood= 0
+>>>>>>> master
 =======
 ## Use a stability index: roots= 4  bedrock= 3, boulders= 2, cobbles= 1, gravel,mud,pebbles,sand,silt,wood= 0
 >>>>>>> master
@@ -18,7 +22,11 @@
 ## Dimensions of data frame at_sub= 8625x34
 ## Dimensions of df atwp_sub (after accounting only for wetted points)dim= 6184x35
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Number of rows with no substrate data = 55 (all NAs)
+=======
+## Number of rows with no substrate data = 750 (level = NAN)
+>>>>>>> master
 =======
 ## Number of rows with no substrate data = 750 (level = NAN)
 >>>>>>> master
@@ -28,6 +36,7 @@
 
 #### Read in data ####
 # Algal transects data with all substrate included
+<<<<<<< HEAD
 <<<<<<< HEAD
 # file: algae_fm_with_substr.tab
   at_sub <- read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='')
@@ -46,6 +55,8 @@
   # use only points that still had water on the last survey of the growing season in each year
   # want transect and survey points from the last survey of each transect in the growing season
 =======
+=======
+>>>>>>> master
 # file: 2014-02-03_AlgalTransects_substrate.tab
   at_sub <- read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='')
   at_sub$Rdate <- as.Date(at_sub$Rdate, format= '%Y-%m-%d')
@@ -58,6 +69,9 @@
   # of the growing season in each year
   # and want transect and survey points from the last survey
   # of each transect in the growing season
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 
 ## find last survey during grow season
@@ -92,6 +106,7 @@
                                    WetPoints_sub$xstrm)), ]
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Add substrate data
   # create stability index
     # bedrock=3,
@@ -111,6 +126,8 @@
 #### Calculate summary statistics ####
   ## to investigate variation in substrate stability within a year
 =======
+=======
+>>>>>>> master
 ## Convert stability index from factor into a numeric value
  atwp_sub$stab <- as.numeric(as.character(atwp_sub$stab))
 
@@ -118,6 +135,9 @@
 #### Calculate summary statistics ####
   ## to investigate variation in substrate stability within a year
   ## stability index calculated in the AlgalTransects1_Format.R script
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
   library(plyr)
   library(NCmisc) #Mode function
@@ -129,6 +149,7 @@
                     stab.mean = mean(stab, na.rm= T),
                     stab.sd = sd(stab, na.rm= T),
 <<<<<<< HEAD
+<<<<<<< HEAD
                     stab.min = min(stab),
                     stab.max = max(stab),
                     stab.diff = stab.max - stab.min)
@@ -138,6 +159,8 @@
   head(sub.stat)
 
 =======
+=======
+>>>>>>> master
                     stab.min = min(stab, na.rm= T),
                     stab.max = max(stab, na.rm= T),
                     stab.diff = stab.max - stab.min,
@@ -152,6 +175,9 @@
   #CladMaxPointWet = merge(CladMaxPointWet, SubAvg, all.x=T)
 
 
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 #### Investigate the data ####
   head(sub.stat[which(is.na(sub.stat$stab.sd) == T), ], 20)
@@ -159,9 +185,12 @@
   (subset(sub.stat, stab.mode == 3 & stab.diff == 3))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   subset(atwp_sub, (year == 1991 & transect == 2.5 & xstrm == 13) & (yearday<=212 & yearday>=105))
 
 =======
+=======
+>>>>>>> master
   head(sub.stat[which(is.na(sub.stat$stab.diff) == T), ], 10)
 
   head(sub.stat[which(sub.stat$stab.diff == -Inf), ], 10)
@@ -179,11 +208,15 @@
   unique(sub.stat$stab.diff)
 
 
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 #### Plot the data ####
   library(ggplot2)
 
   stab.sd.1 <- ggplot(data= sub.stat, aes(x= stab.sd))
+<<<<<<< HEAD
 <<<<<<< HEAD
   stab.sd.1 + geom_histogram(aes(fill= stab.sd == 0)) + theme_bw(base_size= 20)
 
@@ -195,6 +228,8 @@
 
 
 =======
+=======
+>>>>>>> master
   stab.sd.1 + geom_histogram(aes(fill= sub.stat$N ==1)) + scale_fill_manual(values= c("black", "gray")) + labs(x= "Std. Dev.") + ggtitle("Intra-annual Stability Index \n Std. Deviation") + theme_bw(base_size= 20)
 
   stab.diff.1 <- ggplot(data= sub.stat[which(sub.stat$stab.mode == 3), ], aes(x= stab.diff))
@@ -215,5 +250,8 @@
 
   stab.mean.diff.3 <- ggplot(data= sub.stat, aes(x= stab.mean.diff))
   stab.mean.diff.3 + geom_density(size= 1) + labs(x= "Mean - Mode") + ggtitle("N= # of observations / year") + theme_bw(base_size = 20)
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 

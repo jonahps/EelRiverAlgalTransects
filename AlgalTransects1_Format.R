@@ -16,7 +16,11 @@
   # Latest file from Collin: "2014-02-03_AlgalTransects_substrate.tab" (includes 6800 substrate entries, but missing 293 entries from 2013-08-27_AlgalTransects.txt file) USE THIS FILE
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 AlgalTransects <- read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='')
+=======
+  AlgalTransects <- read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='', stringsAsFactors= FALSE)
+>>>>>>> master
 =======
   AlgalTransects <- read.table(file.choose(), header=T, na.strings='', sep='\t', fill=TRUE, quote='', stringsAsFactors= FALSE)
 >>>>>>> master
@@ -106,8 +110,13 @@ AlgalTransects <- read.table(file.choose(), header=T, na.strings='', sep='\t', f
 
   # Merge flooding data into Algal data base
   AlgalTransects2 <- merge(AlgalTransects2, flood, by='year', all.x=T)
+<<<<<<< HEAD
 
 
+=======
+
+
+>>>>>>> master
 #### Spring spates ####
 
 # File "SpringSpatesJK_8713.txt"
@@ -123,12 +132,21 @@ AlgalTransects <- read.table(file.choose(), header=T, na.strings='', sep='\t', f
 
 # File "SpringSpatesMEP_8713.txt"
   spatesMEP <- read.table(file.choose(), header=T, sep='\t', quote='')
+<<<<<<< HEAD
 
   # Merge spate data
   AlgalTransects2 <- merge(AlgalTransects2, spatesJK2, by= 'year', all.x= T)
   AlgalTransects2 <- merge(AlgalTransects2, spatesMEP, by= 'year', all.x= T)
 
 
+=======
+
+  # Merge spate data
+  AlgalTransects2 <- merge(AlgalTransects2, spatesJK2, by= 'year', all.x= T)
+  AlgalTransects2 <- merge(AlgalTransects2, spatesMEP, by= 'year', all.x= T)
+
+
+>>>>>>> master
 #### Add hydrologic data for discharge variables ####
   # the following two .txt files were created in the script:
   # "GrowthSeasonDischarge_2014-06-06.R"
@@ -189,6 +207,7 @@ AlgalTransects <- read.table(file.choose(), header=T, na.strings='', sep='\t', f
                                        c('Cyanobac filaments','general blue-green algae','Nostoc balls','Nostoc ears','Rivularia')= 'Cyanobacteria'")
 
   #table(AlgalTransects2$algaeStates, exclude=NULL)
+<<<<<<< HEAD
 
 
 #### Create algal presence/absence variables ####
@@ -197,6 +216,16 @@ AlgalTransects <- read.table(file.choose(), header=T, na.strings='', sep='\t', f
 	# N-fixing cyanobacteria: Rivularia, Nostoc
 	# 'inedible' mucous-secreting greens: Zygnema, Mougeotia, Spirogyra
 
+=======
+
+
+#### Create algal presence/absence variables ####
+  # Create columns for presence/absence of algal functional groups Cladophora, Nostoc/Rivularia, and Zygnematales
+	# edible, filamentous greens: Cladophora
+	# N-fixing cyanobacteria: Rivularia, Nostoc
+	# 'inedible' mucous-secreting greens: Zygnema, Mougeotia, Spirogyra
+
+>>>>>>> master
 	# prevalence of the different algae types
 	  # table(as.factor(c(as.character(AlgalTransects2$algaedom), as.character(AlgalTransects2$algaesub),as.character(AlgalTransects2$algaesub2))))
 

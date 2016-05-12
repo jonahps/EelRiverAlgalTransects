@@ -19,6 +19,7 @@
 
 ## get transect points present at last survey from growing season in each year
 <<<<<<< HEAD
+<<<<<<< HEAD
   WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,
                                                AlgalTransects2.sum$year,
                                                AlgalTransects2.sum$yearday,
@@ -32,10 +33,14 @@
 =======
   WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,AlgalTransects2.sum$year,AlgalTransects2.sum$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('transect','year','xstrm','yearday','depth')]
 >>>>>>> master
+=======
+  WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,AlgalTransects2.sum$year,AlgalTransects2.sum$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('transect','year','xstrm','yearday','depth')]
+>>>>>>> master
 
 ## remove non-integer points
   WetPoints <- WetPoints[which(WetPoints$xstrm%%1 == 0),]
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   table(WetPoints$xstrm%%1 == 0)
   table(WetPoints$xstrm)
@@ -59,6 +64,14 @@
   aggregate(xstrm ~ transect, data= WetPoints,FUN=max)
 
 ## Refine Clad Max data to include only wet points
+=======
+
+## look at width of channel
+  aggregate(xstrm ~ transect, data= WetPoints,FUN=min)
+  aggregate(xstrm ~ transect, data= WetPoints,FUN=max)
+
+## Refine Clad Max data to include only wet points
+>>>>>>> master
   CladMaxPointWet <- CladMaxPoint[which(paste(CladMaxPoint$transect,
                                               CladMaxPoint$year,
                                               CladMaxPoint$xstrm)
@@ -67,6 +80,9 @@
                                                 WetPoints$year,
                                                 WetPoints$xstrm)),]
 
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 
 ## add growing season averages of flow, depth, and light
@@ -78,6 +94,7 @@
   CladMaxPointWet <- merge(CladMaxPointWet, FlowAvg, all.x=T)
   CladMaxPointWet <- merge(CladMaxPointWet, DepthAvg, all.x=T)
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #### Add substrate data (this still needs work) ####
   # create stability index
@@ -106,6 +123,8 @@
   CladMaxPointWet = merge(CladMaxPointWet, SubAvg, all.x=T)
 ?ddply
 =======
+=======
+>>>>>>> master
 #### Calculate average substrate stability for each xstrm in each year ####
   sub.stab.mean = aggregate(stab ~ year + transect + xstrm,
                      data=subset(AlgalTransects2.sum, yearday<=212 & yearday>=105),
@@ -115,6 +134,9 @@
 
   CladMaxPointWet <- merge(CladMaxPointWet, sub.stab.mean, all.x=T)
 
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 #### Add binary variable for clad growth ####
 
@@ -131,9 +153,15 @@
   head(CladMaxPointWet)
 
 ####  Write file to .csv ####
+<<<<<<< HEAD
   write.csv(CladMaxPointWet, file="AlgalTransects_PointCladMaxHeight.csv", row.names=F)
 
 
+=======
+  #write.csv(CladMaxPointWet, file="AlgalTransects_PointCladMaxHeight.csv", row.names=F)
+
+
+>>>>>>> master
 
 ###### Jonah's previous script (I don't understand what tranxstr is) ####
 
