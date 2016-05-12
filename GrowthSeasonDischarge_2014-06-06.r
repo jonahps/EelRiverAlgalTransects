@@ -29,13 +29,13 @@ for (i in as.numeric(unique(ddata$year))) {
   for (j in start.grow:end.grow){
     mean.dmd = mean(ddata[which(ddata$year==i & ddata$yday<=j),'Discharge_cms'])
     mean.cdmd=rbind(mean.cdmd,cbind(i,j,mean.dmd))
-    }   
-  }  
+    }
+  }
 
 names(mean.cdmd) = c('year','yday','MeanPrecedingDischarge_cms')
 
 # write text files ############
 
-write.table(gsTotal, file='GrowSeason_TotalDischarge.txt', sep = '\t', col.names = T, row.names=F,quote=F)
+#write.table(gsTotal, file='GrowSeason_TotalDischarge.txt', sep = '\t', col.names = T, row.names=F,quote=F)
 
-write.table(mean.cdmd, file='GrowSeason_MeanDischargeByDay.txt', sep = '\t', col.names = T, row.names=F,quote=F)
+#write.table(mean.cdmd, file='GrowSeason_MeanDischargeByDay.txt', sep = '\t', col.names = T, row.names=F,quote=F)

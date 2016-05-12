@@ -11,21 +11,41 @@
 ## Maximum clad height at each point in each year
   # file: AlgalTransects_PointCladMaxHeight.csv (created by script 'AlgalTransects_Summaries')
   CladMaxPointWet.clf <- read.csv(file.choose(),header=T)
-  CladMaxPointWet.clf$xstrmInt <- round(CladMaxPointWet.clf$xstrm, digits = 0)
+  #CladMaxPointWet.clf$xstrmInt <- round(CladMaxPointWet.clf$xstrm, digits = 0)
 
 ## Light data
+  # average watt hours/day at each xstrm
   # LightModel_MarysTransects_SummerAvg.csv (created by script 'AlgalTransects_LightSummerAvg')
   wattavgf <- read.csv(file.choose())
+  names(wattavgf)[2] <- "xstrm"
+
 
   # Cumulative Watt Hours on the solstice
     # LightModel_MarysTransects_CumulativeWattHoursSolstice.csv" (created by script "AlgalTransects_LightModel_CumulativeWattHours.R")
   cwatthours <- read.csv(file.choose())
+  names(cwatthours)[2] <- "xstrm"
+
+## Cumulative discharge for growing season
+  # cumulative discharge from Apr 15 - June 21
+  # File = "GrowSeason_TotalDischarge.txt"
+  tot.discharge <- read.table(file.choose(), sep='\t', header=T)
+  names(tot.discharge)[2] <- "discharge_cms"
 
 ## Spate data
 
   # Mary's spate data
   # file= "SpringSpatesMEP_8713.txt"
-  spatesMEP = read.table(file.choose(), header=T, sep='\t', quote='')
+  #spatesMEP = read.table(file.choose(), header=T, sep='\t', quote='')
+
+  # Jonah/Keith definition >5 cms after May 15
+    # File "SpringSpatesJK_8713.txt"
+    # spates <- read.table(file.choose(), header=T, sep= '\t', quote= '')
+    # spate years = 1990, 1993, 1996, 2005, 2010
+    CladMaxPointWet.clf$spate <- ifelse(CladMaxPointWet.clf$year == 1990, 1,
+                                   ifelse(CladMaxPointWet.clf$year == 1993, 1,
+                                          ifelse(CladMaxPointWet.clf$year == 1996, 1,
+                                                 ifelse(CladMaxPointWet.clf$year == 2005, 1,
+                                                        ifelse(CladMaxPointWet.clf$year == 2010, 1, 0)))))
 
 #### Prepare Data  #######
 
@@ -33,12 +53,15 @@
   cml <- merge(CladMaxPointWet.clf, cwatthours, all.x=T)
   cml <- merge(cml, wattavgf, all.x=T)
 
-## merge spate data into clad max data set
-  cml <- merge(cml, spatesMEP, all.x=T)
+## merge discharge data into clad max data set
+  cml <- merge(cml, tot.discharge, all.x=T)
 
 ## convert PrevYearFlood to factor and fix NAs
   cml$PrevYearFlood <- as.factor(cml$PrevYearFlood)
   cml$PrevYearFlood <- replace(cml$PrevYearFlood, which(cml$PrevYearFlood=='NA'),NA)
+
+## order by year
+  cml <- cml[order(cml$year, cml$transect), ]
 
 ## Write cml as a .csv "CladLightFloodOutput"
     #write.csv(cml, file="CladLightFloodOutput.csv", row.names = FALSE)
