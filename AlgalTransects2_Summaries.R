@@ -18,7 +18,15 @@
   LastGrowSurvey <- aggregate(yearday ~ transect + year, data=subset(AlgalTransects2.sum, yearday<=212 & yearday>=105), FUN=max)
 
 ## get transect points present at last survey from growing season in each year
-  WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,AlgalTransects2.sum$year,AlgalTransects2.sum$yearday,sep='-') %in% paste(LastGrowSurvey$Transect,LastGrowSurvey$year,LastGrowSurvey$yearday,sep='-')),c('transect','year','xstrm','yearday','depth')]
+  WetPoints <- AlgalTransects2.sum[which(paste(AlgalTransects2.sum$Transect,
+                                               AlgalTransects2.sum$year,
+                                               AlgalTransects2.sum$yearday,
+                                               sep='-') %in%
+                                           paste(LastGrowSurvey$Transect,
+                                                 LastGrowSurvey$year,
+                                                 LastGrowSurvey$yearday,
+                                                 sep='-')),
+                                   c('transect','year','xstrm','yearday','depth')]
 
 ## remove non-integer points
   WetPoints <- WetPoints[which(WetPoints$xstrm%%1 == 0),]
