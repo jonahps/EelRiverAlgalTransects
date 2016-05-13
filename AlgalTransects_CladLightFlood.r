@@ -19,7 +19,6 @@
   wattavgf <- read.csv(file.choose())
   names(wattavgf)[2] <- "xstrm"
 
-
   # Cumulative Watt Hours on the solstice
     # LightModel_MarysTransects_CumulativeWattHoursSolstice.csv" (created by script "AlgalTransects_LightModel_CumulativeWattHours.R")
   cwatthours <- read.csv(file.choose())
