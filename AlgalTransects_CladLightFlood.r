@@ -13,6 +13,9 @@
   CladMaxPointWet.clf <- read.csv(file.choose(),header=T)
   #CladMaxPointWet.clf$xstrmInt <- round(CladMaxPointWet.clf$xstrm, digits = 0)
 
+## Remove negative depths
+  CladMaxPointWet.clf <- CladMaxPointWet.clf[which(CladMaxPointWet.clf$depth > 0), ]
+
 ## Light data
   # average watt hours/day at each xstrm
   # LightModel_MarysTransects_SummerAvg.csv (created by script 'AlgalTransects_LightSummerAvg')
